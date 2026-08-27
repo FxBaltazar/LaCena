@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPU Architecture: The Philosophers' Dinner</title>
-    <link href="https://googleapis.com" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -18,9 +18,15 @@
             --bus-color: #22263f;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             background-color: var(--bg-dark);
-            background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
             background-size: 20px 20px;
             color: #e2e8f0;
             font-family: 'JetBrains Mono', monospace;
@@ -37,6 +43,7 @@
             color: var(--cyan-glow);
             text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
             margin-bottom: 5px;
+            text-align: center;
         }
 
         .subtitle {
@@ -45,6 +52,7 @@
             margin: 0 0 25px 0;
             text-align: center;
             max-width: 800px;
+            line-height: 1.5;
         }
 
         .dashboard {
@@ -73,9 +81,10 @@
             position: relative;
             height: 520px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+            overflow: hidden;
         }
 
-        /* Explicador Dinámico de la Analogía */
+        /* Explicador Dinámico */
         .analogia-box {
             background: #141829;
             border: 1px dashed #2d3554;
@@ -83,6 +92,7 @@
             padding: 15px;
             margin-top: 10px;
         }
+
         .analogia-title {
             font-family: 'Orbitron', sans-serif;
             font-size: 0.8rem;
@@ -120,10 +130,12 @@
         }
 
         @keyframes flowData {
-            to { stroke-dashoffset: -200; }
+            to {
+                stroke-dashoffset: -200;
+            }
         }
 
-        /* Cores / Filósofos */
+        /* Cores */
         .hardware-core {
             position: absolute;
             width: 130px;
@@ -140,8 +152,28 @@
             top: 195px;
         }
 
-        #c1 { left: 12%; border-color: var(--cyan-glow); box-shadow: 0 0 15px rgba(0, 240, 255, 0.1); }
-        #c2 { right: 12%; border-color: var(--cyan-glow); box-shadow: 0 0 15px rgba(0, 240, 255, 0.1); }
+        #c1 {
+            left: 12%;
+            border-color: var(--cyan-glow);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+        }
+
+        #c2 {
+            right: 12%;
+            border-color: var(--cyan-glow);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+        }
+
+        .core-icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .core-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: #cbd5e1;
+        }
 
         .estado-texto {
             font-size: 0.65rem;
@@ -151,9 +183,10 @@
             background: #000;
             color: #8892b0;
             font-weight: bold;
+            text-align: center;
         }
 
-        /* RAMs / Tenedores */
+        /* RAM */
         .ram-channel {
             position: absolute;
             left: 50%;
@@ -173,15 +206,41 @@
             z-index: 2;
         }
 
-        #ramA { top: 40px; }
-        #ramB { bottom: 40px; }
+        #ramA {
+            top: 40px;
+        }
+
+        #ramB {
+            bottom: 40px;
+        }
 
         /* Clases de animación */
-        .pensando { animation: pulsoPensar 2.5s infinite ease-in-out; }
-        .hambre { border-color: var(--warning-amber) !important; box-shadow: 0 0 20px rgba(255, 170, 0, 0.4) !important; animation: vibrar 0.3s infinite; }
-        .comiendo { border-color: var(--success-green) !important; box-shadow: 0 0 25px rgba(0, 255, 102, 0.5) !important; }
-        .bloqueado { border-color: var(--error-red) !important; box-shadow: 0 0 25px rgba(255, 0, 85, 0.6) !important; animation: vibrar 0.1s infinite; }
-        .ram-ocupada { background: #300515 !important; border-color: var(--error-red) !important; box-shadow: 0 0 20px rgba(255, 0, 85, 0.3); }
+        .pensando {
+            animation: pulsoPensar 2.5s infinite ease-in-out;
+        }
+
+        .hambre {
+            border-color: var(--warning-amber) !important;
+            box-shadow: 0 0 20px rgba(255, 170, 0, 0.4) !important;
+            animation: vibrar 0.3s infinite;
+        }
+
+        .comiendo {
+            border-color: var(--success-green) !important;
+            box-shadow: 0 0 25px rgba(0, 255, 102, 0.5) !important;
+        }
+
+        .bloqueado {
+            border-color: var(--error-red) !important;
+            box-shadow: 0 0 25px rgba(255, 0, 85, 0.6) !important;
+            animation: vibrar 0.1s infinite;
+        }
+
+        .ram-ocupada {
+            background: #300515 !important;
+            border-color: var(--error-red) !important;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.3);
+        }
 
         /* Botones */
         button {
@@ -197,11 +256,31 @@
             font-weight: bold;
         }
 
-        button:hover { background: #131625; color: #fff; border-color: #444b75; }
-        .btn-danger { color: var(--error-red); border-color: var(--error-red); }
-        .btn-danger:hover { background: rgba(255,0,85,0.1); box-shadow: 0 0 10px rgba(255,0,85,0.2); }
-        .btn-success { color: var(--success-green); border-color: var(--success-green); }
-        .btn-success:hover { background: rgba(0,255,102,0.1); box-shadow: 0 0 10px rgba(0,255,102,0.2); }
+        button:hover {
+            background: #131625;
+            color: #fff;
+            border-color: #444b75;
+        }
+
+        .btn-danger {
+            color: var(--error-red);
+            border-color: var(--error-red);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255,0,85,0.1);
+            box-shadow: 0 0 10px rgba(255,0,85,0.2);
+        }
+
+        .btn-success {
+            color: var(--success-green);
+            border-color: var(--success-green);
+        }
+
+        .btn-success:hover {
+            background: rgba(0,255,102,0.1);
+            box-shadow: 0 0 10px rgba(0,255,102,0.2);
+        }
 
         .terminal {
             background: #030407;
@@ -212,9 +291,10 @@
             height: 110px;
             overflow-y: auto;
             border-radius: 4px;
+            line-height: 1.5;
         }
 
-        /* Sección teórica inferior */
+        /* Sección teórica */
         .seccion-teorica {
             width: 95%;
             max-width: 1200px;
@@ -226,13 +306,26 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.7);
         }
 
+        .seccion-teorica h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--purple-glow);
+            font-size: 1.1rem;
+        }
+
+        .seccion-teorica p {
+            color: #a2a8be;
+            line-height: 1.6;
+            font-size: 0.85rem;
+        }
+
         .tabla-comparativa {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
 
-        .tabla-comparativa th, .tabla-comparativa td {
+        .tabla-comparativa th,
+        .tabla-comparativa td {
             border: 1px solid #22263f;
             padding: 12px;
             text-align: left;
@@ -245,208 +338,667 @@
             font-family: 'Orbitron', sans-serif;
         }
 
+        .tabla-comparativa td {
+            color: #a2a8be;
+        }
+
         @keyframes pulsoPensar {
-            0%, 100% { box-shadow: 0 0 15px rgba(0, 240, 255, 0.1); }
-            50% { box-shadow: 0 0 25px rgba(0, 240, 255, 0.3); }
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+            }
         }
 
         @keyframes vibrar {
-            0% { transform: translate(0.5px, 0.5px); }
-            100% { transform: translate(-0.5px, -0.5px); }
+            0% {
+                transform: translate(0.5px, 0.5px);
+            }
+
+            100% {
+                transform: translate(-0.5px, -0.5px);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .escenario-visual {
+                height: 520px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.4rem;
+            }
+
+            .subtitle {
+                font-size: 0.75rem;
+            }
+
+            .seccion-teorica {
+                padding: 20px;
+            }
+
+            .tabla-comparativa {
+                font-size: 0.7rem;
+            }
+
+            .tabla-comparativa th,
+            .tabla-comparativa td {
+                padding: 7px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <h1>ARCH: DINNER OF THE CORES</h1>
-    <div class="subtitle">El dilema clásico de la Cena de los Filósofos llevado a la arquitectura de hardware de tu computadora en tiempo real.</div>
+
+    <div class="subtitle">
+        El dilema clásico de la Cena de los Filósofos llevado a la arquitectura de hardware de tu computadora en tiempo real.
+    </div>
 
     <div class="dashboard">
-        
-        <!-- PANEL DE CONTROL IZQUIERDO -->
-        <div class="panel-control">
-            <h3 style="margin:0; font-family:'Orbitron'; font-size:0.9rem; color:var(--cyan-glow);">Ejecución</h3>
-            
-            <button class="btn-danger" onclick="iniciarModoConflicto()">⚡ SIMULAR INTERBLOQUEO (DEADLOCK)</button>
-            <button class="btn-success" onclick="iniciarModoMutex()">🛡️ ACTIVAR CONTROL DE BUSES (MUTEX)</button>
-            <button onclick="reiniciarSistema()">🔄 REINICIAR ARQUITECTURA</button>
-            
-            <h3 style="margin:5px 0 0 0; font-family:'Orbitron'; font-size:0.9rem; color:var(--purple-glow);">Logs del Procesador</h3>
-            <div class="terminal" id="term">> Estado: IDLE. Esperando simulación...</div>
 
-            <!-- EXPLICADOR DINÁMICO DE LA ANALOGÍA -->
+        <!-- PANEL DE CONTROL -->
+        <div class="panel-control">
+
+            <h3 style="margin:0; font-family:'Orbitron'; font-size:0.9rem; color:var(--cyan-glow);">
+                Ejecución
+            </h3>
+
+            <button class="btn-danger" onclick="iniciarModoConflicto()">
+                ⚡ SIMULAR INTERBLOQUEO (DEADLOCK)
+            </button>
+
+            <button class="btn-success" onclick="iniciarModoMutex()">
+                🛡️ ACTIVAR CONTROL DE BUSES (MUTEX)
+            </button>
+
+            <button onclick="reiniciarSistema()">
+                🔄 REINICIAR ARQUITECTURA
+            </button>
+
+            <h3 style="margin:5px 0 0 0; font-family:'Orbitron'; font-size:0.9rem; color:var(--purple-glow);">
+                Logs del Procesador
+            </h3>
+
+            <div class="terminal" id="term">
+                > Estado: IDLE. Esperando simulación...
+            </div>
+
+            <!-- EXPLICADOR DINÁMICO -->
             <div class="analogia-box">
-                <div class="analogia-title"><span>💡</span> TRADUCCIÓN A LA MESA:</div>
+
+                <div class="analogia-title">
+                    <span>💡</span>
+                    TRADUCCIÓN A LA MESA:
+                </div>
+
                 <div id="analogia-texto" style="font-size:0.75rem; color:#a2a8be; line-height:1.4;">
                     Selecciona una simulación arriba para ver cómo este evento de hardware equivale al dilema de los filósofos de Dijkstra.
                 </div>
+
             </div>
+
         </div>
 
         <!-- ESCENARIO VISUAL -->
         <div class="escenario-visual">
-            <svg class="bus-svg">
-                <!-- Líneas fijas (Buses de datos de la Motherboard) -->
+
+            <svg class="bus-svg" viewBox="0 0 800 520" preserveAspectRatio="none">
+
+                <!-- Líneas de buses -->
                 <path id="line1A" class="bus-line" d="M 215 260 L 350 65" />
                 <path id="line1B" class="bus-line" d="M 215 260 L 350 465" />
-                
-let timeouts = [];
 
-function log(msg, color = "#8892b0") {
-    const t = document.getElementById('term');
-    t.innerHTML += `<br><span style="color:${color}">> ${msg}</span>`;
-    t.scrollTop = t.scrollHeight;
-}
+                <path id="line2A" class="bus-line" d="M 585 260 L 450 65" />
+                <path id="line2B" class="bus-line" d="M 585 260 L 450 465" />
 
-function explicarAnalogia(texto, color = "var(--warning-amber)") {
-    const box = document.getElementById('analogia-texto');
-    box.innerHTML = texto;
-    document.querySelector('.analogia-title').style.color = color;
-}
+                <!-- Pulsos de datos -->
+                <path id="pulse1A" class="data-pulse" d="M 215 260 L 350 65" />
+                <path id="pulse1B" class="data-pulse" d="M 215 260 L 450 465" />
 
-function limpiarTimeouts() {
-    timeouts.forEach(clearTimeout);
-    timeouts = [];
-}
+                <path id="pulse2A" class="data-pulse" d="M 585 260 L 450 65" />
+                <path id="pulse2B" class="data-pulse" d="M 585 260 L 450 465" />
 
-function activarPulso(idPulso, color) {
-    const p = document.getElementById(idPulso);
-    p.style.display = "block";
-    p.style.stroke = color;
-    p.style.animation = "flowData 1.5s linear infinite";
-}
+            </svg>
 
-function desactivarPulso(idPulso) {
-    document.getElementById(idPulso).style.display = "none";
-}
+            <!-- RAM A -->
+            <div id="ramA" class="ram-channel">
+                CANAL RAM A
+            </div>
 
-function reiniciarSistema() {
-    limpiarTimeouts();
-    document.getElementById('c1').className = "hardware-core pensando";
-    document.getElementById('c2').className = "hardware-core pensando";
-    document.getElementById('state-c1').innerText = "PENSANDO";
-    document.getElementById('state-c2').innerText = "PENSANDO";
-    document.getElementById('state-c1').style.color = "#8892b0";
-    document.getElementById('state-c2').style.color = "#8892b0";
-    document.getElementById('ramA').className = "ram-channel";
-    document.getElementById('ramB').className = "ram-channel";
-    document.getElementById('ramA').innerText = "CANAL RAM A";
-    document.getElementById('ramB').innerText = "CANAL RAM B";
-    document.querySelectorAll('.bus-line').forEach(l => l.style.stroke = "var(--bus-color)");
-    document.querySelectorAll('.data-pulse').forEach(p => p.style.display = "none");
-    document.getElementById('term').innerHTML = "> Arquitectura reseteada.<br>> Estado: IDLE.";
-    explicarAnalogia("Selecciona una simulación arriba para ver cómo este evento de hardware equivale al dilema de los filósofos de Dijkstra.", "var(--warning-amber)");
-}
+            <!-- CORE 1 -->
+            <div id="c1" class="hardware-core pensando">
 
-// ================= MODO 1: DEADLOCK =================
-function iniciarModoConflicto() {
-    reiniciarSistema();
-    log("Iniciando procesos paralelos sin árbitro...", "var(--warning-amber)");
-    explicarAnalogia("Mesa: Los filósofos tienen hambre al mismo tiempo y van a intentar estirar la mano hacia su plato.");
-    
-    timeouts.push(setTimeout(() => {
-        document.getElementById('c1').className = "hardware-core hambre";
-        document.getElementById('c2').className = "hardware-core hambre";
-        document.getElementById('state-c1').innerText = "SOLICITANDO RAM";
-        document.getElementById('state-c2').innerText = "SOLICITANDO RAM";
-        log("Núcleo 1 (Juego) y Núcleo 2 (IA) despiertan y exigen buses de memoria.");
-    }, 1200));
-    
-    timeouts.push(setTimeout(() => {
-        document.getElementById('ramA').className = "ram-channel ram-ocupada";
-        document.getElementById('ramA').innerText = "OCUPADO POR CORE 1";
-        document.getElementById('line1A').style.stroke = "var(--error-red)";
-        activarPulso("pulse1A", "var(--error-red)");
-        log("[LATCH] Core 1 bloqueó Canal A.");
-        
-        document.getElementById('ramB').className = "ram-channel ram-ocupada";
-        document.getElementById('ramB').innerText = "OCUPADO POR CORE 2";
-        document.getElementById('line2B').style.stroke = "var(--error-red)";
-        activarPulso("pulse2B", "var(--error-red)");
-        log("[LATCH] Core 2 bloqueó Canal B.");
-        
-        explicarAnalogia("Mesa: ¡Peligro! Cada filósofo logró agarrar un solo tenedor (Core 1 tiene el tenedor izquierdo A, Core 2 tiene el derecho B). Ninguno puede comer todavía.");
-    }, 2800));
-    
-    timeouts.push(setTimeout(() => {
-        document.getElementById('c1').className = "hardware-core bloqueado";
-        document.getElementById('c2').className = "hardware-core bloqueado";
-        document.getElementById('state-c1').innerText = "DEADLOCK (ESPERA B)";
-        document.getElementById('state-c2').innerText = "DEADLOCK (ESPERA A)";
-        document.getElementById('state-c1').style.color = "var(--error-red)";
-        document.getElementById('state-c2').style.color = "var(--error-red)";
-        document.getElementById('line1B').style.stroke = "var(--warning-amber)";
-        document.getElementById('line2A').style.stroke = "var(--warning-amber)";
-        log("💥 CRITICAL ERROR: Bloqueo de bus de memoria circular.", "var(--error-red)");
-        explicarAnalogia("Mesa: INTERBLOQUEO (Deadlock). El Filósofo 1 no soltará su tenedor hasta que el Filósofo 2 le entregue el suyo, y viceversa. Se quedan congelados mirando el plato para siempre. Tu computadora se ha colgado.", "var(--error-red)");
-    }, 5000));
-}
+                <div class="core-icon">🧠</div>
 
-// ================= MODO 2: MUTEX =================
-function iniciarModoMutex() {
-    reiniciarSistema();
-    log("Activando algoritmo de exclusión mutua...", "var(--success-green)");
-    explicarAnalogia("Mesa: El camarero interviene en la mesa. Aplica una regla asimétrica: nadie puede levantar un tenedor al azar; deben competir ordenadamente por el mismo primero.", "var(--success-green)");
-    
-    timeouts.push(setTimeout(() => {
-        document.getElementById('c1').className = "hardware-core hambre";
-        document.getElementById('c2').className = "hardware-core hambre";
-        document.getElementById('state-c1').innerText = "SOLICITANDO RAM";
-        document.getElementById('state-c2').innerText = "SOLICITANDO RAM";
-        log("Ambos hilos despiertan. El algoritmo obliga a ambos a intentar adueñarse primero del Canal A.");
-    }, 1200));
-    
-    timeouts.push(setTimeout(() => {
-        document.getElementById('ramA').className = "ram-channel ram-ocupada";
-        document.getElementById('ramA').innerText = "OCUPADO POR CORE 1";
-        document.getElementById('line1A').style.stroke = "var(--success-green)";
-        activarPulso("pulse1A", "var(--success-green)");
-        log("[MUTEX] Core 1 ganó el seguro del Canal A.");
-        
-        document.getElementById('c2').className = "hardware-core pensando";
-        document.getElementById('state-c2').innerText = "ESPERANDO (SLEEP)";
-        explicarAnalogia("Mesa: El Filósofo 1 fue más rápido y tomó el Tenedor A. El Filósofo 2 ve que el Tenedor A está ocupado, así que inteligentemente no agarra nada y espera pacientemente con las manos sobre la mesa.", "var(--success-green)");
-    }, 2800));
-    
-    timeouts.push(setTimeout(() => {
-        document.getElementById('ramB').className = "ram-channel ram-ocupada";
-        document.getElementById('ramB').innerText = "OCUPADO POR CORE 1";
-        document.getElementById('line1B').style.stroke = "var(--success-green)";
-        activarPulso("pulse1B", "var(--success-green)");
-        document.getElementById('c1').className = "hardware-core comiendo";
-        document.getElementById('state-c1').innerText = "PROCESANDO DATOS";
-        document.getElementById('state-c1').style.color = "var(--success-green)";
-        log("[EXEC] Core 1 tomó Canal B. Transmitiendo datos...", "var(--cyan-glow)");
-        explicarAnalogia("Mesa: El Filósofo 1 toma el Tenedor B que estaba libre. Ahora que tiene ambos tenedores, puede comer tranquilamente de su plato (el procesador ejecuta el videojuego sin trabas).", "var(--success-green)");
-    }, 4500));
-    
-    timeouts.push(setTimeout(() => {
-        desactivarPulso("pulse1A");
-        desactivarPulso("pulse1B");
-        document.getElementById('line1A').style.stroke = "var(--bus-color)";
-        document.getElementById('line1B').style.stroke = "var(--bus-color)";
-        document.getElementById('c1').className = "hardware-core pensando";
-        document.getElementById('state-c1').innerText = "PENSANDO (IDLE)";
-        document.getElementById('state-c1').style.color = "#8892b0";
-        log("[RELEASE] Core 1 terminó. Liberando canales de bus.");
-        
-        document.getElementById('ramA').className = "ram-channel ram-ocupada";
-        document.getElementById('ramB').className = "ram-channel ram-ocupada";
-        document.getElementById('ramA').innerText = "OCUPADO POR CORE 2";
-        document.getElementById('ramB').innerText = "OCUPADO POR CORE 2";
-        document.getElementById('line2A').style.stroke = "var(--success-green)";
-        document.getElementById('line2B').style.stroke = "var(--success-green)";
-        activarPulso("pulse2A", "var(--success-green)");
-        activarPulso("pulse2B", "var(--success-green)");
-        document.getElementById('c2').className = "hardware-core comiendo";
-        document.getElementById('state-c2').innerText = "PROCESANDO DATOS";
-        document.getElementById('state-c2').style.color = "var(--success-green)";
-        log("[EXEC] Core 2 despierta del Sleep y toma control absoluto de los canales.", "var(--cyan-glow)");
-        explicarAnalogia("Mesa: El Filósofo 1 se llena, se pone a pensar y suelta ambos tenedores. El Filósofo 2 ve la oportunidad, despierta, toma ambos tenedores y empieza a comer él. ¡Nadie se quedó atascado!", "var(--success-green)");
-    }, 7000));
-    
-    timeouts.push(setTimeout(() => {
-        reiniciarSistema();
-        log("✨ Simulación finalizada. Eficiencia del bus: 100%.", "var(--success-green)");
-    }, 9500));
-}
+                <div class="core-name">
+                    CORE 1
+                </div>
+
+                <div class="estado-texto" id="state-c1">
+                    PENSANDO
+                </div>
+
+            </div>
+
+            <!-- CORE 2 -->
+            <div id="c2" class="hardware-core pensando">
+
+                <div class="core-icon">⚙️</div>
+
+                <div class="core-name">
+                    CORE 2
+                </div>
+
+                <div class="estado-texto" id="state-c2">
+                    PENSANDO
+                </div>
+
+            </div>
+
+            <!-- RAM B -->
+            <div id="ramB" class="ram-channel">
+                CANAL RAM B
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SECCIÓN TEÓRICA -->
+    <div class="seccion-teorica">
+
+        <h2>▣ FUNDAMENTO: LA CENA DE LOS FILÓSOFOS</h2>
+
+        <p>
+            El problema de la Cena de los Filósofos fue planteado por Edsger Dijkstra
+            para representar los problemas clásicos de sincronización y concurrencia.
+            En esta simulación, los filósofos representan núcleos de procesamiento,
+            mientras que los tenedores representan recursos compartidos de memoria.
+        </p>
+
+        <p>
+            Cuando cada núcleo obtiene un recurso y espera otro que está ocupado,
+            puede producirse un <strong>deadlock</strong>. La exclusión mutua mediante
+            mecanismos como un mutex permite controlar el acceso a los recursos
+            compartidos y evitar el bloqueo circular.
+        </p>
+
+        <table class="tabla-comparativa">
+
+            <thead>
+                <tr>
+                    <th>Concepto</th>
+                    <th>Filósofos</th>
+                    <th>Arquitectura CPU</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>Filósofo</td>
+                    <td>Persona sentada en la mesa</td>
+                    <td>Núcleo de CPU</td>
+                </tr>
+
+                <tr>
+                    <td>Tenedor</td>
+                    <td>Recurso compartido</td>
+                    <td>Canal / recurso de memoria</td>
+                </tr>
+
+                <tr>
+                    <td>Comer</td>
+                    <td>Consume ambos tenedores</td>
+                    <td>Procesa datos</td>
+                </tr>
+
+                <tr>
+                    <td>Deadlock</td>
+                    <td>Todos esperan recursos</td>
+                    <td>Procesos bloqueados</td>
+                </tr>
+
+                <tr>
+                    <td>Mutex</td>
+                    <td>Control del acceso</td>
+                    <td>Exclusión mutua</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <script>
+
+        let timeouts = [];
+
+        function log(msg, color = "#8892b0") {
+
+            const t = document.getElementById('term');
+
+            t.innerHTML += `<br><span style="color:${color}">> ${msg}</span>`;
+
+            t.scrollTop = t.scrollHeight;
+        }
+
+        function explicarAnalogia(texto, color = "var(--warning-amber)") {
+
+            const box = document.getElementById('analogia-texto');
+
+            box.innerHTML = texto;
+
+            document.querySelector('.analogia-title').style.color = color;
+        }
+
+        function limpiarTimeouts() {
+
+            timeouts.forEach(clearTimeout);
+
+            timeouts = [];
+        }
+
+        function activarPulso(idPulso, color) {
+
+            const p = document.getElementById(idPulso);
+
+            p.style.display = "block";
+            p.style.stroke = color;
+            p.style.animation = "flowData 1.5s linear infinite";
+        }
+
+        function desactivarPulso(idPulso) {
+
+            document.getElementById(idPulso).style.display = "none";
+        }
+
+        function reiniciarSistema() {
+
+            limpiarTimeouts();
+
+            document.getElementById('c1').className = "hardware-core pensando";
+            document.getElementById('c2').className = "hardware-core pensando";
+
+            document.getElementById('state-c1').innerText = "PENSANDO";
+            document.getElementById('state-c2').innerText = "PENSANDO";
+
+            document.getElementById('state-c1').style.color = "#8892b0";
+            document.getElementById('state-c2').style.color = "#8892b0";
+
+            document.getElementById('ramA').className = "ram-channel";
+            document.getElementById('ramB').className = "ram-channel";
+
+            document.getElementById('ramA').innerText = "CANAL RAM A";
+            document.getElementById('ramB').innerText = "CANAL RAM B";
+
+            document.querySelectorAll('.bus-line').forEach(
+                l => l.style.stroke = "var(--bus-color)"
+            );
+
+            document.querySelectorAll('.data-pulse').forEach(
+                p => p.style.display = "none"
+            );
+
+            document.getElementById('term').innerHTML =
+                "> Arquitectura reseteada.<br>> Estado: IDLE.";
+
+            explicarAnalogia(
+                "Selecciona una simulación arriba para ver cómo este evento de hardware equivale al dilema de los filósofos de Dijkstra.",
+                "var(--warning-amber)"
+            );
+        }
+
+
+        // ==========================================================
+        // MODO 1: DEADLOCK
+        // ==========================================================
+
+        function iniciarModoConflicto() {
+
+            reiniciarSistema();
+
+            log(
+                "Iniciando procesos paralelos sin árbitro...",
+                "var(--warning-amber)"
+            );
+
+            explicarAnalogia(
+                "Mesa: Los filósofos tienen hambre al mismo tiempo y van a intentar estirar la mano hacia su plato."
+            );
+
+            timeouts.push(setTimeout(() => {
+
+                document.getElementById('c1').className =
+                    "hardware-core hambre";
+
+                document.getElementById('c2').className =
+                    "hardware-core hambre";
+
+                document.getElementById('state-c1').innerText =
+                    "SOLICITANDO RAM";
+
+                document.getElementById('state-c2').innerText =
+                    "SOLICITANDO RAM";
+
+                log(
+                    "Núcleo 1 (Juego) y Núcleo 2 (IA) despiertan y exigen buses de memoria."
+                );
+
+            }, 1200));
+
+
+            timeouts.push(setTimeout(() => {
+
+                document.getElementById('ramA').className =
+                    "ram-channel ram-ocupada";
+
+                document.getElementById('ramA').innerText =
+                    "OCUPADO POR CORE 1";
+
+                document.getElementById('line1A').style.stroke =
+                    "var(--error-red)";
+
+                activarPulso(
+                    "pulse1A",
+                    "var(--error-red)"
+                );
+
+                log(
+                    "[LATCH] Core 1 bloqueó Canal A."
+                );
+
+
+                document.getElementById('ramB').className =
+                    "ram-channel ram-ocupada";
+
+                document.getElementById('ramB').innerText =
+                    "OCUPADO POR CORE 2";
+
+                document.getElementById('line2B').style.stroke =
+                    "var(--error-red)";
+
+                activarPulso(
+                    "pulse2B",
+                    "var(--error-red)"
+                );
+
+                log(
+                    "[LATCH] Core 2 bloqueó Canal B."
+                );
+
+
+                explicarAnalogia(
+                    "Mesa: ¡Peligro! Cada filósofo logró agarrar un solo tenedor. Core 1 tiene el tenedor izquierdo A y Core 2 tiene el derecho B. Ninguno puede comer todavía."
+                );
+
+            }, 2800));
+
+
+            timeouts.push(setTimeout(() => {
+
+                document.getElementById('c1').className =
+                    "hardware-core bloqueado";
+
+                document.getElementById('c2').className =
+                    "hardware-core bloqueado";
+
+                document.getElementById('state-c1').innerText =
+                    "DEADLOCK (ESPERA B)";
+
+                document.getElementById('state-c2').innerText =
+                    "DEADLOCK (ESPERA A)";
+
+                document.getElementById('state-c1').style.color =
+                    "var(--error-red)";
+
+                document.getElementById('state-c2').style.color =
+                    "var(--error-red)";
+
+                document.getElementById('line1B').style.stroke =
+                    "var(--warning-amber)";
+
+                document.getElementById('line2A').style.stroke =
+                    "var(--warning-amber)";
+
+                log(
+                    "💥 CRITICAL ERROR: Bloqueo de bus de memoria circular.",
+                    "var(--error-red)"
+                );
+
+                explicarAnalogia(
+                    "Mesa: INTERBLOQUEO (Deadlock). El Filósofo 1 no soltará su tenedor hasta que el Filósofo 2 le entregue el suyo, y viceversa. Se quedan congelados mirando el plato para siempre. Tu computadora se ha colgado.",
+                    "var(--error-red)"
+                );
+
+            }, 5000));
+        }
+
+
+        // ==========================================================
+        // MODO 2: MUTEX
+        // ==========================================================
+
+        function iniciarModoMutex() {
+
+            reiniciarSistema();
+
+            log(
+                "Activando algoritmo de exclusión mutua...",
+                "var(--success-green)"
+            );
+
+            explicarAnalogia(
+                "Mesa: El camarero interviene en la mesa. Aplica una regla asimétrica: nadie puede levantar un tenedor al azar; deben competir ordenadamente por el mismo primero.",
+                "var(--success-green)"
+            );
+
+
+            timeouts.push(setTimeout(() => {
+
+                document.getElementById('c1').className =
+                    "hardware-core hambre";
+
+                document.getElementById('c2').className =
+                    "hardware-core hambre";
+
+                document.getElementById('state-c1').innerText =
+                    "SOLICITANDO RAM";
+
+                document.getElementById('state-c2').innerText =
+                    "SOLICITANDO RAM";
+
+                log(
+                    "Ambos hilos despiertan. El algoritmo obliga a ambos a intentar adueñarse primero del Canal A."
+                );
+
+            }, 1200));
+
+
+            timeouts.push(setTimeout(() => {
+
+                document.getElementById('ramA').className =
+                    "ram-channel ram-ocupada";
+
+                document.getElementById('ramA').innerText =
+                    "OCUPADO POR CORE 1";
+
+                document.getElementById('line1A').style.stroke =
+                    "var(--success-green)";
+
+                activarPulso(
+                    "pulse1A",
+                    "var(--success-green)"
+                );
+
+                log(
+                    "[MUTEX] Core 1 ganó el seguro del Canal A.",
+                    "var(--success-green)"
+                );
+
+
+                document.getElementById('c2').className =
+                    "hardware-core pensando";
+
+                document.getElementById('state-c2').innerText =
+                    "ESPERANDO (SLEEP)";
+
+
+                explicarAnalogia(
+                    "Mesa: El Filósofo 1 fue más rápido y tomó el Tenedor A. El Filósofo 2 ve que el Tenedor A está ocupado, así que inteligentemente no agarra nada y espera pacientemente con las manos sobre la mesa.",
+                    "var(--success-green)"
+                );
+
+            }, 2800));
+
+
+            timeouts.push(setTimeout(() => {
+
+                document.getElementById('ramB').className =
+                    "ram-channel ram-ocupada";
+
+                document.getElementById('ramB').innerText =
+                    "OCUPADO POR CORE 1";
+
+                document.getElementById('line1B').style.stroke =
+                    "var(--success-green)";
+
+                activarPulso(
+                    "pulse1B",
+                    "var(--success-green)"
+                );
+
+                document.getElementById('c1').className =
+                    "hardware-core comiendo";
+
+                document.getElementById('state-c1').innerText =
+                    "PROCESANDO DATOS";
+
+                document.getElementById('state-c1').style.color =
+                    "var(--success-green)";
+
+                log(
+                    "[EXEC] Core 1 tomó Canal B. Transmitiendo datos...",
+                    "var(--cyan-glow)"
+                );
+
+
+                explicarAnalogia(
+                    "Mesa: El Filósofo 1 toma el Tenedor B que estaba libre. Ahora que tiene ambos tenedores, puede comer tranquilamente de su plato. El procesador ejecuta el videojuego sin trabas.",
+                    "var(--success-green)"
+                );
+
+            }, 4500));
+
+
+            timeouts.push(setTimeout(() => {
+
+                desactivarPulso("pulse1A");
+                desactivarPulso("pulse1B");
+
+                document.getElementById('line1A').style.stroke =
+                    "var(--bus-color)";
+
+                document.getElementById('line1B').style.stroke =
+                    "var(--bus-color)";
+
+                document.getElementById('c1').className =
+                    "hardware-core pensando";
+
+                document.getElementById('state-c1').innerText =
+                    "PENSANDO (IDLE)";
+
+                document.getElementById('state-c1').style.color =
+                    "#8892b0";
+
+                log(
+                    "[RELEASE] Core 1 terminó. Liberando canales de bus."
+                );
+
+
+                document.getElementById('ramA').className =
+                    "ram-channel ram-ocupada";
+
+                document.getElementById('ramB').className =
+                    "ram-channel ram-ocupada";
+
+                document.getElementById('ramA').innerText =
+                    "OCUPADO POR CORE 2";
+
+                document.getElementById('ramB').innerText =
+                    "OCUPADO POR CORE 2";
+
+
+                document.getElementById('line2A').style.stroke =
+                    "var(--success-green)";
+
+                document.getElementById('line2B').style.stroke =
+                    "var(--success-green)";
+
+
+                activarPulso(
+                    "pulse2A",
+                    "var(--success-green)"
+                );
+
+                activarPulso(
+                    "pulse2B",
+                    "var(--success-green)"
+                );
+
+
+                document.getElementById('c2').className =
+                    "hardware-core comiendo";
+
+                document.getElementById('state-c2').innerText =
+                    "PROCESANDO DATOS";
+
+                document.getElementById('state-c2').style.color =
+                    "var(--success-green)";
+
+
+                log(
+                    "[EXEC] Core 2 despierta del Sleep y toma control absoluto de los canales.",
+                    "var(--cyan-glow)"
+                );
+
+
+                explicarAnalogia(
+                    "Mesa: El Filósofo 1 se llena, se pone a pensar y suelta ambos tenedores. El Filósofo 2 ve la oportunidad, despierta, toma ambos tenedores y empieza a comer él. ¡Nadie se quedó atascado!",
+                    "var(--success-green)"
+                );
+
+            }, 7000));
+
+
+            timeouts.push(setTimeout(() => {
+
+                reiniciarSistema();
+
+                log(
+                    "✨ Simulación finalizada. Eficiencia del bus: 100%.",
+                    "var(--success-green)"
+                );
+
+            }, 9500));
+        }
+
+    </script>
+
+</body>
+</html>
