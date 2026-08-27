@@ -275,4 +275,155 @@
             timeouts.forEach(clearTimeout);
             timeouts = [];
         }
+function activarPulso(idPulso, color, reversible = false) {
+    const p = document.getElementById(idPulso);
+    p.style.display = "block";
+    p.style.stroke = color;
+    p.style.animation = reversible ? "flowData 1.5s linear infinite reverse" : "flowData 1.5s linear infinite";
+}
+
+function desactivarPulso(idPulso) {
+    document.getElementById(idPulso).style.display = "none";
+}
+
+function reiniciarSistema() {
+    limpiarTimeouts();
+    
+    // Reset Cores
+    document.getElementById('c1').className = "hardware-core pensando";
+    document.getElementById('c2').className = "hardware-core pensando";
+    document.getElementById('state-c1').innerText = "PENSANDO";
+    document.getElementById('state-c2').innerText = "PENSANDO";
+    document.getElementById('state-c1').style.color = "#8892b0";
+    document.getElementById('state-c2').style.color = "#8892b0";
+    
+    // Reset RAMs
+    document.getElementById('ramA').className = "ram-channel";
+    document.getElementById('ramB').className = "ram-channel";
+    document.getElementById('ramA').innerText = "CANAL RAM A";
+    document.getElementById('ramB').innerText = "CANAL RAM B";
+    
+    // Reset Buses SVG
+    document.querySelectorAll('.bus-line').forEach(l => l.style.stroke = "var(--bus-color)");
+    document.querySelectorAll('.data-pulse').forEach(p => p.style.display = "none");
+    document.getElementById('term').innerHTML = "> Buses físicos liberados.<br>> Estado: IDLE.";
+}
+
+// ================= MODO 1: INTERBLOQUEO (ERROR) =================
+function iniciarModoConflicto() {
+    reiniciarSistema();
+    log("Iniciando procesos paralelos sin algoritmo de control...", "var(--warning-amber)");
+    
+    // Ambos entran en hambre
+    timeouts.push(setTimeout(() => {
+        document.getElementById('c1').className = "hardware-core hambre";
+        document.getElementById('c2').className = "hardware-core hambre";
+        document.getElementById('state-c1').innerText = "SOLICITANDO RAM";
+        document.getElementById('state-c2').innerText = "SOLICITANDO RAM";
+        log("Núcleo 1 requiere Canal A y B para renderizar Video.");
+        log("Núcleo 2 requiere Canal B y A para procesar Red Neuronal.");
+    }, 1000));
+    
+    // Conflicto de asignación simultánea
+    timeouts.push(setTimeout(() => {
+        // Núcleo 1 toma A
+        document.getElementById('ramA').className = "ram-channel ram-ocupada";
+        document.getElementById('ramA').innerText = "OCUPADO POR CORE 1";
+        document.getElementById('line1A').style.stroke = "var(--error-red)";
+        activarPulso("pulse1A", "var(--error-red)");
+        log("[LATCH] Núcleo 1 bloqueó con éxito el Canal A.", "var(--cyan-glow)");
+        
+        // Núcleo 2 toma B
+        document.getElementById('ramB').className = "ram-channel ram-ocupada";
+        document.getElementById('ramB').innerText = "OCUPADO POR CORE 2";
+        document.getElementById('line2B').style.stroke = "var(--error-red)";
+        activarPulso("pulse2B", "var(--error-red)");
+        log("[LATCH] Núcleo 2 bloqueó con éxito el Canal B.", "var(--cyan-glow)");
+    }, 2500));
+    
+    // Intento cruzado fallido (Espera circular / Deadlock)
+    timeouts.push(setTimeout(() => {
+        document.getElementById('c1').className = "hardware-core bloqueado";
+        document.getElementById('c2').className = "hardware-core bloqueado";
+        document.getElementById('state-c1').innerText = "TRABADO (ESPERA B)";
+        document.getElementById('state-c2').innerText = "TRABADO (ESPERA A)";
+        document.getElementById('state-c1').style.color = "var(--error-red)";
+        document.getElementById('state-c2').style.color = "var(--error-red)";
+        document.getElementById('line1B').style.stroke = "var(--warning-amber)";
+        document.getElementById('line2A').style.stroke = "var(--warning-amber)";
+        log("CRITICAL: Núcleo 1 espera perpetuamente el Canal B.", "var(--error-red)");
+        log("CRITICAL: Núcleo 2 espera perpetuamente el Canal A.", "var(--error-red)");
+        log("💥 ARQUITECTURA EN DEADLOCK. El bus físico se ha congelado (Bus Lockup).", "var(--error-red)");
+    }, 4000));
+}
+
+// ================= MODO 2: MUTEX ASIMÉTRICO (EXITOSO) =================
+function iniciarModoMutex() {
+    reiniciarSistema();
+    log("Protocolo Mutex Asimétrico Activado (Core 1: Par, Core 2: Impar).", "var(--success-green)");
+    
+    // Ambos tienen hambre
+    timeouts.push(setTimeout(() => {
+        document.getElementById('c1').className = "hardware-core hambre";
+        document.getElementById('c2').className = "hardware-core hambre";
+        document.getElementById('state-c1').innerText = "SOLICITANDO RAM";
+        document.getElementById('state-c2').innerText = "SOLICITANDO RAM";
+        log("Ambos núcleos despiertan. Regla: Ambos deben intentar bloquear primero el Canal A.");
+    }, 1000));
+    
+    // Núcleo 1 gana la prioridad sobre el Canal A
+    timeouts.push(setTimeout(() => {
+        document.getElementById('ramA').className = "ram-channel ram-ocupada";
+        document.getElementById('ramA').innerText = "OCUPADO POR CORE 1";
+        document.getElementById('line1A').style.stroke = "var(--success-green)";
+        activarPulso("pulse1A", "var(--success-green)");
+        log("[MUTEX] Núcleo 1 bloquea Canal A. Núcleo 2 detecta bloqueo y entra en espera (Sleep Mode).", "var(--success-green)");
+        document.getElementById('c2').className = "hardware-core pensando";
+        document.getElementById('state-c2').innerText = "ESPERANDO (SLEEP)";
+    }, 2500));
+    
+    // Núcleo 1 toma el Canal B libremente y ejecuta
+    timeouts.push(setTimeout(() => {
+        document.getElementById('ramB').className = "ram-channel ram-ocupada";
+        document.getElementById('ramB').innerText = "OCUPADO POR CORE 1";
+        document.getElementById('line1B').style.stroke = "var(--success-green)";
+        activarPulso("pulse1B", "var(--success-green)");
+        document.getElementById('c1').className = "hardware-core comiendo";
+        document.getElementById('state-c1').innerText = "PROCESANDO DATOS";
+        document.getElementById('state-c1').style.color = "var(--success-green)";
+        log("[EXEC] Núcleo 1 tiene ambos canales. Procesando video a 60 FPS...", "var(--cyan-glow)");
+    }, 4000));
+    
+    // Núcleo 1 termina y libera todo. Núcleo 2 despierta
+    timeouts.push(setTimeout(() => {
+        desactivarPulso("pulse1A");
+        desactivarPulso("pulse1B");
+        document.getElementById('line1A').style.stroke = "var(--bus-color)";
+        document.getElementById('line1B').style.stroke = "var(--bus-color)";
+        document.getElementById('c1').className = "hardware-core pensando";
+        document.getElementById('state-c1').innerText = "PENSANDO (IDLE)";
+        document.getElementById('state-c1').style.color = "#8892b0";
+        log("[RELEASE] Núcleo 1 finalizó. Liberando Canales A y B.");
+        
+        // Núcleo 2 toma el control de los dos canales de golpe
+        document.getElementById('ramA').className = "ram-channel ram-ocupada";
+        document.getElementById('ramB').className = "ram-channel ram-ocupada";
+        document.getElementById('ramA').innerText = "OCUPADO POR CORE 2";
+        document.getElementById('ramB').innerText = "OCUPADO POR CORE 2";
+        document.getElementById('line2A').style.stroke = "var(--success-green)";
+        document.getElementById('line2B').style.stroke = "var(--success-green)";
+        activarPulso("pulse2A", "var(--success-green)");
+        activarPulso("pulse2B", "var(--success-green)");
+        document.getElementById('c2').className = "hardware-core comiendo";
+        document.getElementById('state-c2').innerText = "PROCESANDO DATOS";
+        document.getElementById('state-c2').style.color = "var(--success-green)";
+        log("[EXEC] Núcleo 2 despierta, toma el control y ejecuta la Red Neuronal.", "var(--cyan-glow)");
+    }, 6500));
+    
+    // Fin del ciclo perfecto
+    timeouts.push(setTimeout(() => {
+        reiniciarSistema();
+        log("✨ Ciclo completado con éxito. El procesador operó a máxima eficiencia sin interbloqueos.", "var(--success-green)");
+    }, 9500));
+}
 
