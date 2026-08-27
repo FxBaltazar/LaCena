@@ -2305,10 +2305,14 @@
                RECURSOS DEL CORE
             ================================================= */
 
-            // El Core "i" tiene estrictamente a su izquierda la RAM anterior (i+4)%5 y a su derecha la RAM actual (i)
-               let letIzq = ramNombres[(i + 4) % 5];
-               let letDer = ramNombres[i];
+            const miRamIzq =
+                ramNombres[coreId];
 
+
+            const miRamDer =
+                ramNombres[
+                    (coreId + 1) % 5
+                ];
 
 
             /* ================================================
