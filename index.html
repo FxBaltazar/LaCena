@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>WORLDS COLLIDE: 5-Core Concurrency Simulator</title>
+    <title>WORLDS COLLIDE: Concurrency & Hardware Simulator</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FUENTES -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -50,7 +48,7 @@
             text-shadow:
                 0 0 15px rgba(255, 255, 255, 0.2),
                 0 0 30px var(--cyan-glow);
-            margin: 15px 0 5px 0;
+            margin: 15px 0 5px;
             font-size: 2.2rem;
             font-weight: 700;
             text-align: center;
@@ -59,11 +57,12 @@
         .subtitle {
             color: #4b596e;
             font-size: 0.8rem;
-            margin: 0 0 25px 0;
+            margin: 0 0 25px;
             text-align: center;
             max-width: 900px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            line-height: 1.6;
         }
 
         .dashboard {
@@ -71,8 +70,10 @@
             grid-template-columns: 360px 1fr;
             gap: 20px;
             width: 95%;
-            max-width: 1400px;
+            max-width: 1350px;
         }
+
+        /* ================= PANEL DE CONTROL ================= */
 
         .panel-control {
             background: var(--panel-bg);
@@ -85,89 +86,27 @@
             gap: 12px;
         }
 
-        .panel-control h3 {
+        .panel-title {
             margin: 0;
             font-family: 'Orbitron', sans-serif;
             font-size: 0.85rem;
             color: var(--cyan-glow);
+            letter-spacing: 1px;
         }
 
-        button {
-            background: transparent;
-            color: #697891;
-            border: 1px solid #141829;
-            padding: 11px;
-            border-radius: 6px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.72rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
+        .panel-title.logs {
+            color: var(--purple-glow);
+            margin-top: 8px;
         }
 
-        button:hover {
-            background: #0e1224;
-            color: #fff;
-            border-color: #272e54;
-            transform: translateY(-1px);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .btn-danger {
-            color: var(--error-red);
-            border-color: rgba(255, 0, 85, 0.3);
-        }
-
-        .btn-danger:hover {
-            background: rgba(255,0,85,0.08);
-            border-color: var(--error-red);
-            box-shadow: 0 0 15px rgba(255,0,85,0.15);
-        }
-
-        .btn-success {
-            color: var(--success-green);
-            border-color: rgba(0, 255, 102, 0.3);
-        }
-
-        .btn-success:hover {
-            background: rgba(0,255,102,0.08);
-            border-color: var(--success-green);
-            box-shadow: 0 0 15px rgba(0,255,102,0.15);
-        }
-
-        .btn-reset {
-            color: var(--cyan-glow);
-            border-color: rgba(0, 240, 255, 0.25);
-        }
-
-        .btn-reset:hover {
-            background: rgba(0,240,255,0.06);
-            border-color: var(--cyan-glow);
-        }
-
-        .info-mini {
-            background: #060812;
-            border: 1px solid #12172a;
-            border-radius: 6px;
-            padding: 10px;
-            font-size: 0.65rem;
-            color: #526178;
-            line-height: 1.6;
-        }
-
-        .info-mini strong {
-            color: #8998ae;
-        }
+        /* ================= ESCENARIO ================= */
 
         .escenario-visual {
             background: #06070d;
             border: 1px solid #141829;
             border-radius: 12px;
             position: relative;
-            height: 600px;
+            height: 560px;
             box-shadow:
                 inset 0 0 30px rgba(0,0,0,0.9),
                 0 10px 40px rgba(0,0,0,0.8);
@@ -176,38 +115,23 @@
 
         .escenario-header {
             position: absolute;
-            top: 14px;
-            left: 18px;
-            right: 18px;
-            z-index: 10;
+            top: 15px;
+            left: 20px;
+            right: 20px;
+            z-index: 3;
             display: flex;
             justify-content: space-between;
-            align-items: center;
             pointer-events: none;
         }
 
-        .escenario-title {
+        .escenario-label {
             font-family: 'Orbitron', sans-serif;
-            color: #66758c;
+            color: #313c55;
             font-size: 0.65rem;
             letter-spacing: 2px;
         }
 
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.58rem;
-            color: #46536a;
-        }
-
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--success-green);
-            box-shadow: 0 0 8px var(--success-green);
-        }
+        /* ================= ANALOGÍA ================= */
 
         .analogia-box {
             background: #0c0e1c;
@@ -226,14 +150,12 @@
         }
 
         #analogia-texto {
-            font-size: 0.68rem;
+            font-size: 0.7rem;
+            color: #6f7f98;
             line-height: 1.55;
-            color: #687993;
         }
 
-        #analogia-texto strong {
-            color: #dce6f5;
-        }
+        /* ================= SVG BUSES ================= */
 
         .bus-svg {
             position: absolute;
@@ -248,146 +170,266 @@
         .bus-line {
             fill: none;
             stroke: var(--bus-color);
-            stroke-width: 3;
-            transition: stroke 0.4s;
+            stroke-width: 4;
+            transition: stroke 0.4s, stroke-width 0.4s;
         }
 
         .data-pulse {
             fill: none;
             stroke-width: 5;
             stroke-linecap: round;
-            stroke-dasharray: 10 80;
+            stroke-dasharray: 15 120;
             display: none;
         }
 
         @keyframes flowData {
             to {
-                stroke-dashoffset: -200;
+                stroke-dashoffset: -270;
             }
         }
 
+        /* ================= CORES ================= */
+
         .hardware-core {
             position: absolute;
-            width: 110px;
-            height: 130px;
+            width: 160px;
+            height: 200px;
             background: #0a0c17;
             border: 2px solid #161a30;
-            border-radius: 12px;
+            border-radius: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            padding-top: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            transition: all 0.4s ease;
-            z-index: 3;
-            transform: translate(-50%, -50%);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: 2;
+            top: 175px;
+        }
+
+        #c1 {
+            left: 8%;
+            border-color: rgba(0, 240, 255, 0.2);
+        }
+
+        #c2 {
+            right: 8%;
+            border-color: rgba(0, 240, 255, 0.2);
+        }
+
+        .core-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            color: #8995aa;
+            letter-spacing: 1px;
+            margin-top: 7px;
         }
 
         .core-svg-icon {
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             fill: #404c5e;
             transition: fill 0.4s;
         }
 
         .estado-texto {
-            font-size: 0.55rem;
-            margin-top: 4px;
-            padding: 1px 4px;
-            border-radius: 3px;
+            font-size: 0.6rem;
+            margin-top: 6px;
+            padding: 2px 6px;
+            border-radius: 4px;
             background: #010204;
             color: #404c5e;
             font-weight: 700;
+            letter-spacing: 1px;
+            border: 1px solid #141829;
+            text-align: center;
         }
 
         .temp-display {
-            font-size: 0.55rem;
+            font-size: 0.65rem;
+            font-weight: bold;
             color: var(--cyan-glow);
-            margin-top: 2px;
+            margin-top: 5px;
             font-family: 'Orbitron', sans-serif;
         }
 
+        /* ================= CONTROLES MINI ================= */
+
+        .core-manual-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            width: 88%;
+            margin-top: 10px;
+        }
+
+        .btn-mini {
+            padding: 4px 0;
+            font-size: 0.52rem;
+            font-family: 'Orbitron', sans-serif;
+            background: #111426;
+            border: 1px solid #202747;
+            color: #7a8ba3;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+
+        .btn-mini:hover {
+            background: #19203f;
+            color: #fff;
+        }
+
+        .btn-release-mini {
+            grid-column: 1 / -1;
+            font-size: 0.5rem;
+            background: #1c0910;
+            border-color: rgba(255, 0, 85, 0.3);
+            color: #c4788d;
+        }
+
+        .btn-release-mini:hover {
+            background: #330d1b;
+            color: #fff;
+            border-color: var(--error-red);
+        }
+
+        /* ================= RAM ================= */
+
+        .ram-channel {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 290px;
+            height: 55px;
+            background: #07040e;
+            border: 2px solid #1a0d29;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: all 0.4s;
+            z-index: 2;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        #ramA {
+            top: 40px;
+        }
+
+        #ramB {
+            bottom: 40px;
+        }
+
+        .ram-svg-icon {
+            width: 22px;
+            height: 22px;
+            fill: #342047;
+            transition: fill 0.4s;
+        }
+
+        /* ================= ESTADOS ================= */
+
         .pensando {
             animation: pulsoPensar 3s infinite ease-in-out;
-            border-color: rgba(0, 240, 255, 0.2);
         }
 
         .pensando .core-svg-icon {
             fill: var(--cyan-glow);
+            filter: drop-shadow(0 0 4px var(--cyan-glow));
         }
 
         .hambre {
             border-color: var(--warning-amber) !important;
-            box-shadow: 0 0 15px rgba(255, 170, 0, 0.2) !important;
+            box-shadow: 0 0 20px rgba(255, 170, 0, 0.15) !important;
         }
 
         .hambre .core-svg-icon {
             fill: var(--warning-amber);
+            filter: drop-shadow(0 0 4px var(--warning-amber));
         }
 
         .comiendo {
             border-color: var(--success-green) !important;
-            box-shadow: 0 0 20px rgba(0, 255, 102, 0.3) !important;
+            box-shadow: 0 0 25px rgba(0, 255, 102, 0.35) !important;
         }
 
         .comiendo .core-svg-icon {
             fill: var(--success-green);
+            filter: drop-shadow(0 0 6px var(--success-green));
         }
 
         .bloqueado {
             border-color: var(--error-red) !important;
-            box-shadow: 0 0 20px rgba(255, 0, 85, 0.4) !important;
+            box-shadow: 0 0 25px rgba(255, 0, 85, 0.45) !important;
             animation: vibrar 0.12s infinite;
         }
 
         .bloqueado .core-svg-icon {
             fill: var(--error-red);
-        }
-
-        .ram-channel {
-            position: absolute;
-            width: 45px;
-            height: 45px;
-            background: #07040e;
-            border: 2px solid #1a0d29;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.6rem;
-            font-weight: bold;
-            transition: all 0.4s;
-            z-index: 2;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.5);
-            color: #6c4a8d;
-        }
-
-        .ram-channel::before {
-            content: "";
-            position: absolute;
-            inset: 4px;
-            border: 1px solid #21142e;
-            border-radius: 50%;
-            pointer-events: none;
+            filter: drop-shadow(0 0 6px var(--error-red));
         }
 
         .ram-ocupada {
             background: #17020a !important;
             border-color: var(--error-red) !important;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.15);
             color: var(--error-red);
-            box-shadow: 0 0 15px rgba(255,0,85,0.25);
         }
 
-        .ram-ocupada::before {
-            border-color: rgba(255,0,85,0.3);
+        .ram-ocupada .ram-svg-icon {
+            fill: var(--error-red);
+            filter: drop-shadow(0 0 4px var(--error-red));
         }
 
-        .ram-svg-icon {
-            width: 16px;
-            height: 16px;
-            fill: #342047;
+        /* ================= BOTONES ================= */
+
+        button {
+            background: transparent;
+            color: #697891;
+            border: 1px solid #141829;
+            padding: 11px;
+            border-radius: 6px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
         }
+
+        button:hover {
+            background: #0e1224;
+            color: #fff;
+            border-color: #272e54;
+        }
+
+        .btn-danger {
+            color: var(--error-red);
+            border-color: rgba(255, 0, 85, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255,0,85,0.08);
+            border-color: var(--error-red);
+        }
+
+        .btn-success {
+            color: var(--success-green);
+            border-color: rgba(0, 255, 102, 0.3);
+        }
+
+        .btn-success:hover {
+            background: rgba(0,255,102,0.08);
+            border-color: var(--success-green);
+        }
+
+        /* ================= TERMINAL ================= */
 
         .terminal {
             background: #010204;
@@ -399,21 +441,10 @@
             overflow-y: auto;
             border-radius: 4px;
             border: 1px solid #0d101d;
-            line-height: 1.45;
+            line-height: 1.6;
         }
 
-        .terminal::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        .terminal::-webkit-scrollbar-track {
-            background: #05070c;
-        }
-
-        .terminal::-webkit-scrollbar-thumb {
-            background: #1a2035;
-            border-radius: 5px;
-        }
+        /* ================= MÉTRICAS ================= */
 
         .hardware-metrics {
             grid-column: 1 / -1;
@@ -424,6 +455,7 @@
             border: 1px solid #141829;
             border-radius: 12px;
             padding: 15px 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
 
         .metric-card {
@@ -440,9 +472,9 @@
         }
 
         .metric-value {
-            color: #a9b7ca;
+            color: #dce7f3;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
         .metric-bar-bg {
@@ -459,11 +491,14 @@
             width: 15%;
             background: var(--cyan-glow);
             transition: width 0.5s, background 0.5s;
+            box-shadow: 0 0 8px var(--cyan-glow);
         }
+
+        /* ================= TEORÍA ================= */
 
         .seccion-teorica {
             width: 95%;
-            max-width: 1400px;
+            max-width: 1350px;
             display: grid;
             grid-template-columns: 1fr 400px;
             gap: 20px;
@@ -476,24 +511,21 @@
             border: 1px solid #141829;
             border-radius: 12px;
             padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
 
-        .section-title {
+        .section-heading {
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
             color: var(--cyan-glow);
-            letter-spacing: 1px;
+            font-size: 0.85rem;
             margin: 0;
+            letter-spacing: 1px;
         }
 
-        .teoria-text {
+        .teoria-box p {
             color: #687993;
             font-size: 0.75rem;
             line-height: 1.7;
-        }
-
-        .teoria-text strong {
-            color: #aab8cb;
         }
 
         .tabla-comparativa {
@@ -510,18 +542,16 @@
             font-size: 0.8rem;
         }
 
+        .tabla-comparativa td {
+            color: #6e7f99;
+            line-height: 1.5;
+        }
+
         .tabla-comparativa th {
             background: #0d101f;
             color: var(--cyan-glow);
             font-family: 'Orbitron', sans-serif;
-        }
-
-        .tabla-comparativa td {
-            color: #66758c;
-        }
-
-        .tabla-comparativa tr:hover td {
-            background: #0c0f1c;
+            font-size: 0.75rem;
         }
 
         .glosario-list {
@@ -536,6 +566,13 @@
             border: 1px solid #151a33;
             border-radius: 6px;
             padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .glosario-item:hover {
+            border-color: var(--cyan-glow);
+            background: #10152d;
         }
 
         .glosario-term {
@@ -549,42 +586,36 @@
             font-size: 0.7rem;
             color: #6a7c96;
             margin-top: 3px;
-            line-height: 1.45;
+            line-height: 1.3;
         }
 
-        .footer {
-            width: 95%;
-            max-width: 1400px;
-            margin: 20px 0 5px;
-            text-align: center;
-            color: #293247;
-            font-size: 0.6rem;
-            letter-spacing: 1px;
-        }
+        /* ================= ANIMACIONES ================= */
 
         @keyframes pulsoPensar {
             0%, 100% {
+                border-color: rgba(0, 240, 255, 0.15);
                 box-shadow: 0 0 12px rgba(0, 240, 255, 0.02);
             }
 
             50% {
+                border-color: rgba(0, 240, 255, 0.4);
                 box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
             }
         }
 
         @keyframes vibrar {
             0% {
-                transform: translate(calc(-50% + 0.5px), calc(-50% + 0.5px));
+                transform: translate(0.5px, 0.5px);
             }
 
             100% {
-                transform: translate(calc(-50% - 0.5px), calc(-50% - 0.5px));
+                transform: translate(-0.5px, -0.5px);
             }
         }
 
         @keyframes glitchPantalla {
             0%, 100% {
-                background-color: #06070d;
+                background-color: var(--bg-dark);
             }
 
             50% {
@@ -592,179 +623,345 @@
             }
         }
 
-        @media (max-width: 1100px) {
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 950px) {
             .dashboard {
                 grid-template-columns: 1fr;
-            }
-
-            .hardware-metrics {
-                grid-column: auto;
             }
 
             .seccion-teorica {
                 grid-template-columns: 1fr;
             }
 
-            .panel-control {
-                order: 2;
-            }
-
-            .escenario-visual {
-                order: 1;
+            .hardware-metrics {
+                grid-template-columns: 1fr;
             }
         }
 
-        @media (max-width: 700px) {
+        @media (max-width: 650px) {
             body {
                 padding: 10px;
             }
 
             h1 {
-                font-size: 1.45rem;
-                letter-spacing: 2px;
+                font-size: 1.3rem;
             }
 
-            .subtitle {
-                font-size: 0.65rem;
+            .dashboard,
+            .seccion-teorica {
+                width: 100%;
             }
 
             .escenario-visual {
-                height: 500px;
+                height: 600px;
             }
 
-            .hardware-metrics {
-                grid-template-columns: 1fr;
+            .hardware-core {
+                width: 135px;
+                height: 200px;
             }
 
-            .teoria-box,
-            .glosario-box {
-                padding: 18px;
+            #c1 {
+                left: 2%;
             }
 
-            .tabla-comparativa {
-                font-size: 0.65rem;
+            #c2 {
+                right: 2%;
             }
 
-            .tabla-comparativa th,
-            .tabla-comparativa td {
-                padding: 7px;
-                font-size: 0.65rem;
+            .ram-channel {
+                width: 220px;
             }
         }
     </style>
 </head>
 
-<body>
+<body id="viewport">
 
     <h1>WORLDS COLLIDE</h1>
 
     <div class="subtitle">
-        Simulador Simétrico Completo • 5 Cores compitiendo por 5 Canales de RAM
+        CONCURRENCY & HARDWARE SIMULATOR · EL DILEMA DE LOS FILÓSOFOS TRADUCIDO A NÚCLEOS, BUSES Y MEMORIA
     </div>
+
 
     <div class="dashboard">
 
-        <!-- ========================================= -->
-        <!-- PANEL DE CONTROL -->
-        <!-- ========================================= -->
+        <!-- ================= PANEL IZQUIERDO ================= -->
 
         <div class="panel-control">
 
-            <h3>ORQUESTADOR</h3>
+            <h3 class="panel-title">CONTROL DE EJECUCIÓN</h3>
 
             <button
                 class="btn-danger"
                 onclick="iniciarModoConflicto()">
-                ⚡ SIMULAR DEADLOCK (5 CORES)
+                ⚡ SIMULAR DEADLOCK
             </button>
 
             <button
                 class="btn-success"
                 onclick="iniciarModoMutex()">
-                🛡️ ACTIVAR ARBITRAJE MUTEX
+                🛡️ ACTIVAR MUTEX
             </button>
 
-            <button
-                class="btn-reset"
-                onclick="reiniciarSistema()">
-                ↻ REINICIAR SISTEMA
+            <button onclick="reiniciarSistema()">
+                🔄 REINICIAR SISTEMA
             </button>
 
-            <div class="info-mini">
-                <strong>Arquitectura:</strong> Multiprocesador simétrico<br>
-                <strong>Cores:</strong> 5 unidades de procesamiento<br>
-                <strong>RAM:</strong> 5 canales compartidos<br>
-                <strong>Modelo:</strong> Productor / consumidor de recursos
+
+            <h3 class="panel-title logs">
+                REGISTROS DEL PROCESADOR
+            </h3>
+
+            <div class="terminal" id="term">
+                > Sistema iniciado.<br>
+                > Estado: IDLE.<br>
+                > Esperando instrucciones...
             </div>
+
 
             <div class="analogia-box">
 
                 <div class="analogia-title">
-                    ANALOGÍA: FILÓSOFOS COMENSALES
+                    💡 TRADUCCIÓN A LA MESA
                 </div>
 
                 <div id="analogia-texto">
-                    <strong>Simulación de 5 Filósofos:</strong>
-                    El sistema está estable. Cada Core computa tareas
-                    locales de forma interna sin requerir buses externos.
+                    <b>Modo Manual Activado:</b>
+                    Usa los controles dentro de cada núcleo para tomar los canales A y B.
+                    Si cada Core toma un canal diferente, provocarás un DEADLOCK.
                 </div>
 
-            </div>
-
-            <div class="terminal" id="term">
-                &gt; Buses de memoria sincronizados.<br>
-                &gt; Topología de 5 Cores online.
             </div>
 
         </div>
 
 
-        <!-- ========================================= -->
-        <!-- ESCENARIO VISUAL -->
-        <!-- ========================================= -->
+        <!-- ================= ESCENARIO ================= -->
 
-        <div class="escenario-visual" id="viewport">
+        <div class="escenario-visual">
 
             <div class="escenario-header">
+                <span class="escenario-label">SYSTEM VIEWPORT</span>
+                <span class="escenario-label">LIVE CONCURRENCY SIMULATION</span>
+            </div>
 
-                <div class="escenario-title">
-                    HARDWARE INTERCONNECT / MEMORY BUS
+
+            <!-- SVG: CONEXIONES DE BUSES -->
+
+            <svg
+                class="bus-svg"
+                viewBox="0 0 1000 560"
+                preserveAspectRatio="none">
+
+                <!-- CORE 1 A RAM A -->
+                <path
+                    id="line1A"
+                    class="bus-line"
+                    d="M 200 260 L 500 68" />
+
+                <!-- CORE 1 A RAM B -->
+                <path
+                    id="line1B"
+                    class="bus-line"
+                    d="M 200 300 L 500 492" />
+
+                <!-- CORE 2 A RAM A -->
+                <path
+                    id="line2A"
+                    class="bus-line"
+                    d="M 800 260 L 500 68" />
+
+                <!-- CORE 2 A RAM B -->
+                <path
+                    id="line2B"
+                    class="bus-line"
+                    d="M 800 300 L 500 492" />
+
+
+                <!-- PULSOS DE DATOS -->
+
+                <path
+                    id="pulse1A"
+                    class="data-pulse"
+                    d="M 200 260 L 500 68" />
+
+                <path
+                    id="pulse1B"
+                    class="data-pulse"
+                    d="M 200 300 L 500 492" />
+
+                <path
+                    id="pulse2A"
+                    class="data-pulse"
+                    d="M 800 260 L 500 68" />
+
+                <path
+                    id="pulse2B"
+                    class="data-pulse"
+                    d="M 800 300 L 500 492" />
+
+            </svg>
+
+
+            <!-- ================= RAM A ================= -->
+
+            <div
+                class="ram-channel"
+                id="ramA">
+
+                <span>BUS: CHANNEL RAM A</span>
+
+                <svg
+                    class="ram-svg-icon"
+                    viewBox="0 0 24 24">
+
+                    <path d="M4 6h16v12H4zM6 8v8h2V8zm4 0v8h2V8zm4 0v8h2V8zm4 0v8h2V8z"/>
+                </svg>
+
+            </div>
+
+
+            <!-- ================= CORE 1 ================= -->
+
+            <div
+                class="hardware-core pensando"
+                id="c1">
+
+                <svg
+                    class="core-svg-icon"
+                    viewBox="0 0 24 24">
+
+                    <path d="M9 3h6v2h2a2 2 0 0 1 2 2v2h2v6h-2v2a2 2 0 0 1-2 2h-2v2H9v-2H7a2 2 0 0 1-2-2v-2H3V9h2V7a2 2 0 0 1 2-2h2V3zm-2 4v10h10V7H7zm2 2h6v6H9V9z"/>
+                </svg>
+
+                <div class="core-name">
+                    CORE 01 · GAME THREAD
                 </div>
 
-                <div class="status-indicator">
-                    <span class="status-dot"></span>
-                    SYSTEM ONLINE
+                <div
+                    class="estado-texto"
+                    id="state-c1">
+                    PENSANDO
+                </div>
+
+                <div
+                    class="temp-display"
+                    id="temp-c1">
+                    35.0 °C
+                </div>
+
+
+                <div class="core-manual-controls">
+
+                    <button
+                        class="btn-mini"
+                        onclick="manualLock(1, 'A')">
+                        LOCK A
+                    </button>
+
+                    <button
+                        class="btn-mini"
+                        onclick="manualLock(1, 'B')">
+                        LOCK B
+                    </button>
+
+                    <button
+                        class="btn-mini btn-release-mini"
+                        onclick="manualFree(1)">
+                        RELEASE
+                    </button>
+
                 </div>
 
             </div>
 
-            <!-- SVG PARA LOS BUSES -->
-            <svg
-                id="svg-buses"
-                class="bus-svg"
-                viewBox="0 0 760 560"
-                preserveAspectRatio="none">
-            </svg>
 
-            <!-- CONTENEDOR DE RAM -->
-            <div id="rams-container"></div>
+            <!-- ================= CORE 2 ================= -->
 
-            <!-- CONTENEDOR DE CORES -->
-            <div id="cores-container"></div>
+            <div
+                class="hardware-core pensando"
+                id="c2">
+
+                <svg
+                    class="core-svg-icon"
+                    viewBox="0 0 24 24">
+
+                    <path d="M9 3h6v2h2a2 2 0 0 1 2 2v2h2v6h-2v2a2 2 0 0 1-2 2h-2v2H9v-2H7a2 2 0 0 1-2-2v-2H3V9h2V7a2 2 0 0 1 2-2h2V3zm-2 4v10h10V7H7zm2 2h6v6H9V9z"/>
+                </svg>
+
+                <div class="core-name">
+                    CORE 02 · AI THREAD
+                </div>
+
+                <div
+                    class="estado-texto"
+                    id="state-c2">
+                    PENSANDO
+                </div>
+
+                <div
+                    class="temp-display"
+                    id="temp-c2">
+                    35.0 °C
+                </div>
+
+
+                <div class="core-manual-controls">
+
+                    <button
+                        class="btn-mini"
+                        onclick="manualLock(2, 'A')">
+                        LOCK A
+                    </button>
+
+                    <button
+                        class="btn-mini"
+                        onclick="manualLock(2, 'B')">
+                        LOCK B
+                    </button>
+
+                    <button
+                        class="btn-mini btn-release-mini"
+                        onclick="manualFree(2)">
+                        RELEASE
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= RAM B ================= -->
+
+            <div
+                class="ram-channel"
+                id="ramB">
+
+                <span>BUS: CHANNEL RAM B</span>
+
+                <svg
+                    class="ram-svg-icon"
+                    viewBox="0 0 24 24">
+
+                    <path d="M4 6h16v12H4zM6 8v8h2V8zm4 0v8h2V8zm4 0v8h2V8zm4 0v8h2V8z"/>
+                </svg>
+
+            </div>
 
         </div>
 
 
-        <!-- ========================================= -->
-        <!-- MÉTRICAS -->
-        <!-- ========================================= -->
+        <!-- ================= MÉTRICAS ================= -->
 
         <div class="hardware-metrics">
 
             <div class="metric-card">
 
                 <div class="metric-label">
-                    FRECUENCIA CPU
+                    CPU FREQUENCY
                 </div>
 
                 <div
@@ -777,7 +974,7 @@
                     <div
                         class="metric-bar-fill"
                         id="bar-freq"
-                        style="width: 76%;">
+                        style="width:76%;">
                     </div>
                 </div>
 
@@ -787,7 +984,7 @@
             <div class="metric-card">
 
                 <div class="metric-label">
-                    VOLTAJE CORE
+                    CORE VOLTAGE
                 </div>
 
                 <div
@@ -800,7 +997,7 @@
                     <div
                         class="metric-bar-fill"
                         id="bar-volt"
-                        style="width: 85.4%;">
+                        style="width:85%;">
                     </div>
                 </div>
 
@@ -810,7 +1007,7 @@
             <div class="metric-card">
 
                 <div class="metric-label">
-                    CARGA DEL SISTEMA
+                    SYSTEM LOAD
                 </div>
 
                 <div
@@ -823,7 +1020,7 @@
                     <div
                         class="metric-bar-fill"
                         id="bar-load"
-                        style="width: 12%;">
+                        style="width:12%;">
                     </div>
                 </div>
 
@@ -834,74 +1031,75 @@
     </div>
 
 
-    <!-- ========================================= -->
-    <!-- SECCIÓN TEÓRICA -->
-    <!-- ========================================= -->
+    <!-- ================= TEORÍA ================= -->
 
-    <div class="seccion-teorica">
+    <section class="seccion-teorica">
 
         <div class="teoria-box">
 
-            <h2 class="section-title">
-                ANÁLISIS DE CONCURRENCIA
+            <h2 class="section-heading">
+                COMPARACIÓN: FILÓSOFOS VS HARDWARE
             </h2>
 
-            <p class="teoria-text">
-                Este simulador representa un sistema multiprocesador donde
-                <strong>cinco cores</strong> compiten por recursos compartidos
-                de memoria. El comportamiento permite visualizar conceptos
-                fundamentales de sistemas operativos y programación concurrente.
+            <p>
+                Este simulador utiliza el problema clásico de la Cena de los Filósofos
+                para representar conflictos de concurrencia. Los filósofos se convierten
+                en núcleos del procesador y los tenedores representan recursos compartidos.
             </p>
 
-            <p class="teoria-text">
-                En el escenario de <strong>Deadlock</strong>, cada proceso
-                adquiere un recurso y posteriormente solicita otro recurso
-                que está siendo utilizado por otro proceso. Esta situación
-                produce una <strong>espera circular</strong>, provocando que
-                ninguno de los procesos pueda continuar.
-            </p>
-
-            <p class="teoria-text">
-                En el escenario <strong>Mutex</strong>, se introduce una
-                estrategia de arbitraje que modifica el orden de adquisición
-                de recursos. Al romper la simetría se evita la formación de
-                una cadena circular de espera.
-            </p>
 
             <table class="tabla-comparativa">
 
                 <thead>
                     <tr>
-                        <th>CONDICIÓN</th>
-                        <th>DEADLOCK</th>
-                        <th>MUTEX</th>
+                        <th>CENA DE LOS FILÓSOFOS</th>
+                        <th>SIMULADOR DE HARDWARE</th>
+                        <th>CONCEPTO</th>
                     </tr>
                 </thead>
 
                 <tbody>
 
                     <tr>
-                        <td>Recursos</td>
-                        <td>Bloqueados</td>
-                        <td>Administrados</td>
+                        <td>Filósofo</td>
+                        <td>Core / Hilo de ejecución</td>
+                        <td>Proceso que compite por recursos.</td>
                     </tr>
 
                     <tr>
-                        <td>Espera circular</td>
-                        <td>SÍ</td>
-                        <td>NO</td>
+                        <td>Tenedor A</td>
+                        <td>Canal RAM A</td>
+                        <td>Recurso compartido.</td>
                     </tr>
 
                     <tr>
-                        <td>Procesamiento</td>
-                        <td>DETENIDO</td>
-                        <td>CONTINUO</td>
+                        <td>Tenedor B</td>
+                        <td>Canal RAM B</td>
+                        <td>Segundo recurso necesario.</td>
                     </tr>
 
                     <tr>
-                        <td>Uso de CPU</td>
-                        <td>0%</td>
-                        <td>Alto</td>
+                        <td>Comer</td>
+                        <td>Procesar datos</td>
+                        <td>Ejecutar correctamente la tarea.</td>
+                    </tr>
+
+                    <tr>
+                        <td>Esperar</td>
+                        <td>Sleep / Waiting</td>
+                        <td>El hilo espera sin continuar.</td>
+                    </tr>
+
+                    <tr>
+                        <td>Dos filósofos reteniendo recursos</td>
+                        <td>Deadlock</td>
+                        <td>Espera circular que bloquea el sistema.</td>
+                    </tr>
+
+                    <tr>
+                        <td>Camarero</td>
+                        <td>Mutex</td>
+                        <td>Controlador de exclusión mutua.</td>
                     </tr>
 
                 </tbody>
@@ -911,436 +1109,83 @@
         </div>
 
 
-        <!-- ========================================= -->
-        <!-- GLOSARIO -->
-        <!-- ========================================= -->
-
         <div class="glosario-box">
 
-            <h2 class="section-title">
-                GLOSARIO
+            <h2 class="section-heading">
+                GLOSARIO RÁPIDO
             </h2>
+
 
             <div class="glosario-list">
 
                 <div class="glosario-item">
-
-                    <div class="glosario-term">
-                        DEADLOCK
-                    </div>
-
+                    <div class="glosario-term">DEADLOCK</div>
                     <div class="glosario-desc">
-                        Situación en la que varios procesos quedan
-                        bloqueados esperando recursos que otros procesos
-                        mantienen ocupados.
+                        Dos o más procesos esperan indefinidamente recursos retenidos entre ellos.
                     </div>
-
                 </div>
 
-
                 <div class="glosario-item">
-
-                    <div class="glosario-term">
-                        MUTEX
-                    </div>
-
+                    <div class="glosario-term">MUTEX</div>
                     <div class="glosario-desc">
-                        Mecanismo de exclusión mutua utilizado para
-                        controlar el acceso simultáneo a un recurso.
+                        Mecanismo que permite que solo un proceso acceda a una sección crítica.
                     </div>
-
                 </div>
 
-
                 <div class="glosario-item">
-
-                    <div class="glosario-term">
-                        SECCIÓN CRÍTICA
-                    </div>
-
+                    <div class="glosario-term">LOCK</div>
                     <div class="glosario-desc">
-                        Fragmento de código que accede a recursos
-                        compartidos y debe ejecutarse de manera controlada.
+                        Operación mediante la cual un proceso adquiere temporalmente un recurso.
                     </div>
-
                 </div>
 
-
                 <div class="glosario-item">
-
-                    <div class="glosario-term">
-                        ESPERA CIRCULAR
-                    </div>
-
+                    <div class="glosario-term">RELEASE</div>
                     <div class="glosario-desc">
-                        Cadena donde cada proceso espera un recurso
-                        retenido por el siguiente proceso.
+                        Liberación de un recurso para que otro proceso pueda utilizarlo.
                     </div>
-
                 </div>
 
-
                 <div class="glosario-item">
-
-                    <div class="glosario-term">
-                        CORE
-                    </div>
-
+                    <div class="glosario-term">EXCLUSIÓN MUTUA</div>
                     <div class="glosario-desc">
-                        Unidad de procesamiento capaz de ejecutar
-                        instrucciones de manera independiente.
+                        Garantía de que un recurso crítico sea utilizado por un solo proceso a la vez.
                     </div>
-
-                </div>
-
-
-                <div class="glosario-item">
-
-                    <div class="glosario-term">
-                        RAM
-                    </div>
-
-                    <div class="glosario-desc">
-                        Memoria de acceso aleatorio utilizada por los
-                        procesos para almacenar temporalmente información.
-                    </div>
-
                 </div>
 
             </div>
 
         </div>
 
-    </div>
+    </section>
 
 
-    <div class="footer">
-        WORLDS COLLIDE • CONCURRENCY &amp; OPERATING SYSTEMS LAB
-    </div>
-
-
-    <!-- ========================================= -->
-    <!-- JAVASCRIPT -->
-    <!-- ========================================= -->
+    <!-- ================= JAVASCRIPT ================= -->
 
     <script>
 
         let timeouts = [];
 
-        // Estado de las 5 RAMs
-        // 0 = libre
-        // número = Core que la posee
-        let estadoRams = {
+        let estadoBuses = {
             A: 0,
-            B: 0,
-            C: 0,
-            D: 0,
-            E: 0
-        };
-
-        const ramNombres = ['A', 'B', 'C', 'D', 'E'];
-
-
-        // =========================================
-        // PARÁMETROS DEL CÍRCULO
-        // =========================================
-
-        const centerX = 380;
-        const centerY = 280;
-
-        const radiusCores = 190;
-        const radiusRams = 130;
-
-
-        // =========================================
-        // INICIALIZACIÓN
-        // =========================================
-
-        window.onload = function () {
-
-            generarNodosCirculares();
-
-            reiniciarSistema();
-
+            B: 0
         };
 
 
-        // =========================================
-        // GENERAR CORES, RAMS Y BUSES
-        // =========================================
+        /* ================= LOG ================= */
 
-        function generarNodosCirculares() {
+        function log(msg, color = "#56657a") {
 
-            const coresCont =
-                document.getElementById('cores-container');
-
-            const ramsCont =
-                document.getElementById('rams-container');
-
-            const svgBuses =
-                document.getElementById('svg-buses');
-
-
-            let htmlCores = '';
-            let htmlRams = '';
-            let svgLines = '';
-
-
-            for (let i = 0; i < 5; i++) {
-
-                // -----------------------------------------
-                // CORE
-                // -----------------------------------------
-
-                let angleCore =
-                    (i * 2 * Math.PI / 5) - Math.PI / 2;
-
-                let cx =
-                    centerX +
-                    radiusCores * Math.cos(angleCore);
-
-                let cy =
-                    centerY +
-                    radiusCores * Math.sin(angleCore);
-
-
-                htmlCores += `
-
-                    <div
-                        id="c${i}"
-                        class="hardware-core pensando"
-                        style="
-                            left: ${cx}px;
-                            top: ${cy}px;
-                        "
-                    >
-
-                        <svg
-                            class="core-svg-icon"
-                            viewBox="0 0 24 24"
-                        >
-
-                            <path
-                                d="M19 19H5V5h14v14z
-                                M3 7h2v2H3V7zm0 4h2v2H3v-2zm0 4h2v2H3v-2z
-                                M19 7h2v2h-2V7zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2z
-                                M7 3h2v2H7V3zm4 0h2v2h-2V3zm4 0h2v2h-2V3z
-                                M7 19h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z
-                                M6 6h12v12H6V6z"
-                            />
-
-                        </svg>
-
-                        <b
-                            style="
-                                font-size:0.55rem;
-                                margin-top:3px;
-                                color:var(--cyan-glow);
-                                font-family:'Orbitron';
-                            "
-                        >
-                            CORE 0${i}
-                        </b>
-
-                        <span
-                            id="state-c${i}"
-                            class="estado-texto"
-                        >
-                            PENSANDO
-                        </span>
-
-                        <span
-                            id="temp-c${i}"
-                            class="temp-display"
-                        >
-                            35.0 °C
-                        </span>
-
-                    </div>
-
-                `;
-
-
-                // -----------------------------------------
-                // RAM
-                // -----------------------------------------
-
-                let angleRam =
-                    ((i + 0.5) * 2 * Math.PI / 5)
-                    - Math.PI / 2;
-
-                let rx =
-                    centerX +
-                    radiusRams * Math.cos(angleRam);
-
-                let ry =
-                    centerY +
-                    radiusRams * Math.sin(angleRam);
-
-                let letraRam = ramNombres[i];
-
-
-                htmlRams += `
-
-                    <div
-                        id="ram${letraRam}"
-                        class="ram-channel"
-                        style="
-                            left: ${rx}px;
-                            top: ${ry}px;
-                        "
-                        title="RAM ${letraRam}"
-                    >
-
-                        <span>${letraRam}</span>
-
-                    </div>
-
-                `;
-
-
-                // -----------------------------------------
-                // BUSES
-                // -----------------------------------------
-
-                let ramIzq =
-                    ramNombres[i];
-
-                let ramDer =
-                    ramNombres[(i + 1) % 5];
-
-
-                // RAM izquierda
-
-                let angleRamIzq =
-                    ((i - 0.5) * 2 * Math.PI / 5)
-                    - Math.PI / 2;
-
-
-                let rizqx =
-                    centerX +
-                    radiusRams * Math.cos(angleRamIzq);
-
-                let rizqy =
-                    centerY +
-                    radiusRams * Math.sin(angleRamIzq);
-
-
-                // RAM derecha
-
-                let angleRamDer =
-                    ((i + 0.5) * 2 * Math.PI / 5)
-                    - Math.PI / 2;
-
-
-                let rderx =
-                    centerX +
-                    radiusRams * Math.cos(angleRamDer);
-
-                let rdery =
-                    centerY +
-                    radiusRams * Math.sin(angleRamDer);
-
-
-                // -----------------------------------------
-                // LÍNEAS NORMALES
-                // -----------------------------------------
-
-                svgLines += `
-
-                    <path
-                        id="line${i}-${ramIzq}"
-                        class="bus-line"
-                        d="M ${cx} ${cy}
-                           L ${rizqx} ${rizqy}"
-                    />
-
-                `;
-
-
-                svgLines += `
-
-                    <path
-                        id="line${i}-${ramDer}"
-                        class="bus-line"
-                        d="M ${cx} ${cy}
-                           L ${rderx} ${rdery}"
-                    />
-
-                `;
-
-
-                // -----------------------------------------
-                // PULSOS IZQUIERDOS
-                // -----------------------------------------
-
-                svgLines += `
-
-                    <path
-                        id="pulse${i}-${ramIzq}"
-                        class="data-pulse"
-                        d="M ${cx} ${cy}
-                           L ${rizqx} ${rizqy}"
-                    />
-
-                `;
-
-
-                // -----------------------------------------
-                // PULSOS DERECHOS
-                // -----------------------------------------
-
-                svgLines += `
-
-                    <path
-                        id="pulse${i}-${ramDer}"
-                        class="data-pulse"
-                        d="M ${cx} ${cy}
-                           L ${rderx} ${rdery}"
-                    />
-
-                `;
-
-            }
-
-
-            coresCont.innerHTML = htmlCores;
-
-            ramsCont.innerHTML = htmlRams;
-
-            svgBuses.innerHTML = svgLines;
-
-        }
-
-
-        // =========================================
-        // TERMINAL
-        // =========================================
-
-        function log(
-            msg,
-            color = "#56657a"
-        ) {
-
-            const t =
-                document.getElementById('term');
-
+            const t = document.getElementById('term');
 
             t.innerHTML +=
-                `<br><span style="color:${color}">
-                    > ${msg}
-                </span>`;
+                `<br><span style="color:${color}">> ${msg}</span>`;
 
-
-            t.scrollTop =
-                t.scrollHeight;
-
+            t.scrollTop = t.scrollHeight;
         }
 
 
-        // =========================================
-        // ANALOGÍA
-        // =========================================
+        /* ================= ANALOGÍA ================= */
 
         function explicarAnalogia(
             texto,
@@ -1350,21 +1195,14 @@
             const box =
                 document.getElementById('analogia-texto');
 
+            box.innerHTML = texto;
 
-            box.innerHTML =
-                texto;
-
-
-            document.querySelector(
-                '.analogia-title'
-            ).style.color = color;
-
+            document.querySelector('.analogia-title').style.color =
+                color;
         }
 
 
-        // =========================================
-        // MÉTRICAS
-        // =========================================
+        /* ================= MÉTRICAS ================= */
 
         function cambiarMetricas(
             freq,
@@ -1373,240 +1211,575 @@
             colorFreq = "var(--cyan-glow)"
         ) {
 
-            document.getElementById(
-                'val-freq'
-            ).innerText =
+            document.getElementById('val-freq').innerText =
                 freq.toFixed(2) + " GHz";
 
-
-            document.getElementById(
-                'bar-freq'
-            ).style.width =
+            document.getElementById('bar-freq').style.width =
                 Math.min(freq * 20, 100) + "%";
 
-
-            document.getElementById(
-                'bar-freq'
-            ).style.background =
+            document.getElementById('bar-freq').style.background =
                 colorFreq;
 
+            document.getElementById('bar-freq').style.boxShadow =
+                `0 0 8px ${colorFreq}`;
 
-            document.getElementById(
-                'val-volt'
-            ).innerText =
+
+            document.getElementById('val-volt').innerText =
                 volt.toFixed(2) + " V";
 
-
-            document.getElementById(
-                'bar-volt'
-            ).style.width =
+            document.getElementById('bar-volt').style.width =
                 Math.min(volt * 70, 100) + "%";
 
 
-            document.getElementById(
-                'bar-volt'
-            ).style.background =
-                "var(--purple-glow)";
-
-
-            document.getElementById(
-                'val-load'
-            ).innerText =
+            document.getElementById('val-load').innerText =
                 load + "%";
 
-
-            document.getElementById(
-                'bar-load'
-            ).style.width =
-                Math.min(load, 100) + "%";
-
-
-            document.getElementById(
-                'bar-load'
-            ).style.background =
-                load >= 80
-                    ? "var(--success-green)"
-                    : colorFreq;
-
+            document.getElementById('bar-load').style.width =
+                load + "%";
         }
 
 
-        // =========================================
-        // REINICIAR SISTEMA
-        // =========================================
+        /* ================= TEMPERATURA ================= */
+
+        function actualizarTemperatura(
+            coreId,
+            temp,
+            color
+        ) {
+
+            const t =
+                document.getElementById(`temp-c${coreId}`);
+
+            t.innerText =
+                temp.toFixed(1) + " °C";
+
+            t.style.color = color;
+        }
+
+
+        /* ================= PULSOS ================= */
+
+        function activarPulso(
+            idPulso,
+            color
+        ) {
+
+            const p =
+                document.getElementById(idPulso);
+
+            p.style.display = "block";
+            p.style.stroke = color;
+            p.style.animation =
+                "flowData 1.2s linear infinite";
+        }
+
+
+        function desactivarPulso(idPulso) {
+
+            document.getElementById(idPulso).style.display =
+                "none";
+        }
+
+
+        /* ================= REINICIAR ================= */
 
         function reiniciarSistema() {
 
-            // Cancelar todas las animaciones programadas
-
-            timeouts.forEach(
-                clearTimeout
-            );
+            timeouts.forEach(clearTimeout);
 
             timeouts = [];
 
-
-            // Liberar RAM
-
-            estadoRams = {
+            estadoBuses = {
                 A: 0,
-                B: 0,
-                C: 0,
-                D: 0,
-                E: 0
+                B: 0
             };
 
 
-            // Quitar glitch
-
-            document.getElementById(
-                'viewport'
-            ).style.animation = "none";
+            document.getElementById('viewport').style.animation =
+                "none";
 
 
-            // Restaurar cores
+            ['c1', 'c2'].forEach(id => {
 
-            for (let i = 0; i < 5; i++) {
+                document.getElementById(id).className =
+                    "hardware-core pensando";
 
-                const c =
-                    document.getElementById(
-                        'c' + i
-                    );
+                document.getElementById('state-' + id).innerText =
+                    "PENSANDO";
 
+                document.getElementById('state-' + id).style.color =
+                    "#404c5e";
 
-                if (c) {
+                actualizarTemperatura(
+                    id === 'c1' ? 1 : 2,
+                    35.0,
+                    "var(--cyan-glow)"
+                );
 
-                    c.className =
-                        "hardware-core pensando";
-
-                }
-
-
-                const st =
-                    document.getElementById(
-                        'state-c' + i
-                    );
+            });
 
 
-                if (st) {
+            ['ramA', 'ramB'].forEach(id => {
 
-                    st.innerText =
-                        "PENSANDO";
+                const r =
+                    document.getElementById(id);
 
-                    st.style.color =
-                        "#404c5e";
+                r.className =
+                    "ram-channel";
 
-                }
+                r.firstElementChild.innerText =
+                    "BUS: CHANNEL RAM " +
+                    id.slice(-1);
 
+            });
 
-                const tmp =
-                    document.getElementById(
-                        'temp-c' + i
-                    );
-
-
-                if (tmp) {
-
-                    tmp.innerText =
-                        "35.0 °C";
-
-                    tmp.style.color =
-                        "var(--cyan-glow)";
-
-                }
-
-            }
-
-
-            // Restaurar RAM
-
-            ramNombres.forEach(
-                letra => {
-
-                    const r =
-                        document.getElementById(
-                            'ram' + letra
-                        );
-
-
-                    if (r) {
-
-                        r.className =
-                            "ram-channel";
-
-
-                        r.innerHTML =
-                            `<span>${letra}</span>`;
-
-                    }
-
-                }
-            );
-
-
-            // Restaurar buses
 
             document
                 .querySelectorAll('.bus-line')
-                .forEach(
-                    l => {
+                .forEach(l => {
 
-                        l.style.stroke =
-                            "var(--bus-color)";
+                    l.style.stroke =
+                        "var(--bus-color)";
 
-                    }
-                );
+                });
 
 
             document
                 .querySelectorAll('.data-pulse')
-                .forEach(
-                    p => {
+                .forEach(p => {
 
-                        p.style.display =
-                            "none";
+                    p.style.display =
+                        "none";
 
-                        p.style.animation =
-                            "none";
-
-                    }
-                );
+                });
 
 
-            // Terminal
+            document.getElementById('term').innerHTML =
+                "> Arquitectura reseteada.<br>" +
+                "> Modo híbrido manual/auto listo.";
 
-            document.getElementById(
-                'term'
-            ).innerHTML =
-                `> Buses de memoria sincronizados.
-                 <br>> Topología de 5 Cores online.`;
-
-
-            // Analogía
 
             explicarAnalogia(
-                "<strong>Simulación de 5 Filósofos:</strong> " +
-                "El sistema está estable. Cada Core computa " +
-                "tareas locales de forma interna sin requerir " +
-                "buses externos.",
+                "<b>Modo Manual Activado:</b> Haz clic en los botones LOCK dentro de cada núcleo para simular la asignación de recursos. Si ambos cores retienen un recurso diferente, provocarás un DEADLOCK. Usa RELEASE para intentar resolverlo.",
                 "var(--warning-amber)"
             );
 
-
-            // Métricas
 
             cambiarMetricas(
                 3.80,
                 1.22,
                 12
             );
-
         }
 
 
-        // =========================================
-        // DEADLOCK
-        // =========================================
+        /* =====================================================
+           MODO MANUAL
+        ===================================================== */
+
+        function manualLock(
+            coreId,
+            canal
+        ) {
+
+            const idCoreText =
+                'c' + coreId;
+
+
+            if (estadoBuses[canal] !== 0) {
+
+                log(
+                    `[DENIED] Core 0${coreId} no puede tomar Canal ${canal} (Ocupado por Core 0${estadoBuses[canal]}).`,
+                    "var(--error-red)"
+                );
+
+                return;
+            }
+
+
+            estadoBuses[canal] =
+                coreId;
+
+
+            document
+                .getElementById(`line${coreId}${canal}`)
+                .style.stroke =
+                "var(--error-red)";
+
+
+            activarPulso(
+                `pulse${coreId}${canal}`,
+                "var(--error-red)"
+            );
+
+
+            const r =
+                document.getElementById('ram' + canal);
+
+            r.className =
+                "ram-channel ram-ocupada";
+
+            r.firstElementChild.innerText =
+                `LOCKED BY CORE 0${coreId}`;
+
+
+            /* CORE OBTUVO AMBOS */
+
+            if (
+                estadoBuses.A === coreId &&
+                estadoBuses.B === coreId
+            ) {
+
+                document
+                    .getElementById(idCoreText)
+                    .className =
+                    "hardware-core comiendo";
+
+
+                document
+                    .getElementById('state-' + idCoreText)
+                    .innerText =
+                    "PROCESANDO";
+
+
+                document
+                    .getElementById('state-' + idCoreText)
+                    .style.color =
+                    "var(--success-green)";
+
+
+                actualizarTemperatura(
+                    coreId,
+                    74.2,
+                    "var(--success-green)"
+                );
+
+
+                log(
+                    `[SUCCESS] Core 0${coreId} tiene ambos canales. ¡Procesamiento activo!`,
+                    "var(--success-green)"
+                );
+
+
+                explicarAnalogia(
+                    `<b>Mesa:</b> El filósofo 0${coreId} obtuvo ambos tenedores. Ahora puede comer con éxito de su plato.`,
+                    "var(--success-green)"
+                );
+
+
+                cambiarMetricas(
+                    4.90,
+                    1.35,
+                    95
+                );
+
+            } else {
+
+                document
+                    .getElementById(idCoreText)
+                    .className =
+                    "hardware-core hambre";
+
+
+                document
+                    .getElementById('state-' + idCoreText)
+                    .innerText =
+                    `RETIENE CANAL ${canal}`;
+
+
+                document
+                    .getElementById('state-' + idCoreText)
+                    .style.color =
+                    "var(--warning-amber)";
+
+
+                actualizarTemperatura(
+                    coreId,
+                    52.8,
+                    "var(--warning-amber)"
+                );
+
+
+                log(
+                    `[LATCH] Core 0${coreId} retiene Canal ${canal}.`,
+                    "var(--warning-amber)"
+                );
+
+
+                /* DETECCIÓN DE DEADLOCK */
+
+                if (
+                    estadoBuses.A !== 0 &&
+                    estadoBuses.B !== 0 &&
+                    estadoBuses.A !== estadoBuses.B
+                ) {
+
+                    for (
+                        let i = 1;
+                        i <= 2;
+                        i++
+                    ) {
+
+                        document
+                            .getElementById('c' + i)
+                            .className =
+                            "hardware-core bloqueado";
+
+
+                        document
+                            .getElementById('state-c' + i)
+                            .innerText =
+                            "DEADLOCK MUTUO";
+
+
+                        document
+                            .getElementById('state-c' + i)
+                            .style.color =
+                            "var(--error-red)";
+
+
+                        actualizarTemperatura(
+                            i,
+                            96.5,
+                            "var(--error-red)"
+                        );
+
+                    }
+
+
+                    document
+                        .getElementById('line1B')
+                        .style.stroke =
+                        "var(--warning-amber)";
+
+
+                    document
+                        .getElementById('line2A')
+                        .style.stroke =
+                        "var(--warning-amber)";
+
+
+                    document
+                        .getElementById('viewport')
+                        .style.animation =
+                        "glitchPantalla 0.2s infinite";
+
+
+                    log(
+                        "💥 CRITICAL ERROR: Interbloqueo manual inducido. ¡Prueba RELEASE en uno de los cores para salvar el sistema!",
+                        "var(--error-red)"
+                    );
+
+
+                    explicarAnalogia(
+                        "<b>Mesa: ¡DEADLOCK!</b> Ambos filósofos tienen un solo tenedor y esperan el recurso del otro. Pulsa <b>RELEASE</b> en cualquiera de los dos núcleos para romper voluntariamente el ciclo.",
+                        "var(--error-red)"
+                    );
+
+
+                    cambiarMetricas(
+                        0.00,
+                        0.85,
+                        0,
+                        "var(--error-red)"
+                    );
+                }
+            }
+        }
+
+
+        /* =====================================================
+           LIBERACIÓN MANUAL
+        ===================================================== */
+
+        function manualFree(coreId) {
+
+            log(
+                `[RELEASE] Core 0${coreId} libera todos sus canales asignados para romper el atasco.`
+            );
+
+
+            if (estadoBuses.A === coreId) {
+                estadoBuses.A = 0;
+            }
+
+            if (estadoBuses.B === coreId) {
+                estadoBuses.B = 0;
+            }
+
+
+            ['A', 'B'].forEach(canal => {
+
+                if (estadoBuses[canal] === 0) {
+
+                    const r =
+                        document.getElementById(
+                            'ram' + canal
+                        );
+
+                    r.className =
+                        "ram-channel";
+
+                    r.firstElementChild.innerText =
+                        "BUS: CHANNEL RAM " +
+                        canal;
+
+
+                    document
+                        .getElementById(`line1${canal}`)
+                        .style.stroke =
+                        "var(--bus-color)";
+
+
+                    document
+                        .getElementById(`line2${canal}`)
+                        .style.stroke =
+                        "var(--bus-color)";
+
+
+                    desactivarPulso(
+                        `pulse1${canal}`
+                    );
+
+                    desactivarPulso(
+                        `pulse2${canal}`
+                    );
+                }
+            });
+
+
+            document
+                .getElementById('viewport')
+                .style.animation =
+                "none";
+
+
+            /* REEVALUAR CORES */
+
+            for (
+                let i = 1;
+                i <= 2;
+                i++
+            ) {
+
+                const idCoreText =
+                    'c' + i;
+
+
+                if (
+                    estadoBuses.A !== i &&
+                    estadoBuses.B !== i
+                ) {
+
+                    document
+                        .getElementById(idCoreText)
+                        .className =
+                        "hardware-core pensando";
+
+
+                    document
+                        .getElementById('state-' + idCoreText)
+                        .innerText =
+                        "PENSANDO";
+
+
+                    document
+                        .getElementById('state-' + idCoreText)
+                        .style.color =
+                        "#404c5e";
+
+
+                    actualizarTemperatura(
+                        i,
+                        35.0,
+                        "var(--cyan-glow)"
+                    );
+
+                }
+
+                else if (
+                    estadoBuses.A === i &&
+                    estadoBuses.B === i
+                ) {
+
+                    document
+                        .getElementById(idCoreText)
+                        .className =
+                        "hardware-core comiendo";
+
+
+                    document
+                        .getElementById('state-' + idCoreText)
+                        .innerText =
+                        "PROCESANDO";
+
+
+                    document
+                        .getElementById('state-' + idCoreText)
+                        .style.color =
+                        "var(--success-green)";
+
+
+                    actualizarTemperatura(
+                        i,
+                        74.2,
+                        "var(--success-green)"
+                    );
+
+                }
+
+                else {
+
+                    document
+                        .getElementById(idCoreText)
+                        .className =
+                        "hardware-core hambre";
+
+
+                    const canalRetenido =
+                        estadoBuses.A === i
+                            ? 'A'
+                            : 'B';
+
+
+                    document
+                        .getElementById('state-' + idCoreText)
+                        .innerText =
+                        `RETIENE CANAL ${canalRetenido}`;
+
+
+                    document
+                        .getElementById('state-' + idCoreText)
+                        .style.color =
+                        "var(--warning-amber)";
+
+
+                    actualizarTemperatura(
+                        i,
+                        55.0,
+                        "var(--warning-amber)"
+                    );
+                }
+            }
+
+
+            explicarAnalogia(
+                "<b>Mesa:</b> El atasco fue resuelto. Uno de los filósofos cedió sus recursos y la espera circular desapareció.",
+                "var(--success-green)"
+            );
+
+
+            cambiarMetricas(
+                3.80,
+                1.22,
+                12
+            );
+        }
+
+
+        /* =====================================================
+           MODO AUTOMÁTICO 1: DEADLOCK
+        ===================================================== */
 
         function iniciarModoConflicto() {
 
@@ -1614,257 +1787,232 @@
 
 
             log(
-                "Iniciando hilos simétricos sin árbitro central...",
+                "Secuencia Automática: Simulación de Caos por Concurrencia...",
                 "var(--warning-amber)"
             );
 
 
-            explicarAnalogia(
-                "<strong>Mesa:</strong> Los 5 filósofos sienten " +
-                "hambre simultáneamente. Cada uno estira la mano " +
-                "izquierda hacia su tenedor."
-            );
-
-
-            // -----------------------------------------
-            // PASO 1
-            // -----------------------------------------
+            /* PASO 1 */
 
             timeouts.push(
-
                 setTimeout(() => {
 
-                    for (let i = 0; i < 5; i++) {
+                    document
+                        .getElementById('c1')
+                        .className =
+                        "hardware-core hambre";
 
-                        document.getElementById(
-                            'c' + i
-                        ).className =
-                            "hardware-core hambre";
-
-
-                        document.getElementById(
-                            'state-c' + i
-                        ).innerText =
-                            "REQ BUS";
+                    document
+                        .getElementById('c2')
+                        .className =
+                        "hardware-core hambre";
 
 
-                        document.getElementById(
-                            `temp-c${i}`
-                        ).innerText =
-                            "55.4 °C";
+                    document
+                        .getElementById('state-c1')
+                        .innerText =
+                        "SOLICITANDO BUS";
 
-                    }
+                    document
+                        .getElementById('state-c2')
+                        .innerText =
+                        "SOLICITANDO BUS";
 
 
-                    log(
-                        "Los 5 Cores exigen acceso a los canales " +
-                        "de la RAM para escribir resultados."
+                    actualizarTemperatura(
+                        1,
+                        58.3,
+                        "var(--warning-amber)"
+                    );
+
+                    actualizarTemperatura(
+                        2,
+                        59.1,
+                        "var(--warning-amber)"
+                    );
+
+
+                    explicarAnalogia(
+                        "<b>Mesa:</b> Ambos filósofos sienten hambre simultáneamente y estiran las manos hacia los recursos.",
+                        "var(--warning-amber)"
                     );
 
 
                     cambiarMetricas(
                         4.20,
                         1.28,
-                        50,
-                        "var(--warning-amber)"
+                        45
                     );
 
-                }, 1000)
-
+                }, 1200)
             );
 
 
-            // -----------------------------------------
-            // PASO 2
-            // -----------------------------------------
+            /* PASO 2 */
 
             timeouts.push(
-
                 setTimeout(() => {
 
-                    for (let i = 0; i < 5; i++) {
-
-                        let miRamIzq =
-                            ramNombres[i];
+                    estadoBuses.A = 1;
 
 
-                        estadoRams[
-                            miRamIzq
-                        ] = i;
+                    document
+                        .getElementById('ramA')
+                        .className =
+                        "ram-channel ram-ocupada";
 
 
-                        const r =
-                            document.getElementById(
-                                'ram' + miRamIzq
-                            );
+                    document
+                        .getElementById('ramA')
+                        .firstElementChild
+                        .innerText =
+                        "LOCKED BY CORE 01";
 
 
-                        r.className =
-                            "ram-channel ram-ocupada";
+                    document
+                        .getElementById('line1A')
+                        .style.stroke =
+                        "var(--error-red)";
 
 
-                        r.innerHTML =
-                            `<span style="font-size:0.45rem;">
-                                C${i}
-                             </span>`;
-
-
-                        const line =
-                            document.getElementById(
-                                `line${i}-${miRamIzq}`
-                            );
-
-
-                        if (line) {
-
-                            line.style.stroke =
-                                "var(--error-red)";
-
-                        }
-
-
-                        const pulse =
-                            document.getElementById(
-                                `pulse${i}-${miRamIzq}`
-                            );
-
-
-                        if (pulse) {
-
-                            pulse.style.display =
-                                "block";
-
-                            pulse.style.stroke =
-                                "var(--error-red)";
-
-                            pulse.style.animation =
-                                "flowData 1.2s linear infinite";
-
-                        }
-
-                    }
-
-
-                    log(
-                        "[LATCH] Cada Core logró bloquear " +
-                        "su canal izquierdo de RAM."
+                    activarPulso(
+                        "pulse1A",
+                        "var(--error-red)"
                     );
 
 
-                    explicarAnalogia(
-                        "<strong>Mesa:</strong> Cada uno de los 5 " +
-                        "filósofos ha agarrado con éxito su tenedor " +
-                        "izquierdo. Ahora la mesa tiene los 5 " +
-                        "tenedores ocupados simultáneamente."
-                    );
-
-                }, 2500)
-
-            );
+                    estadoBuses.B = 2;
 
 
-            // -----------------------------------------
-            // PASO 3
-            // -----------------------------------------
-
-            timeouts.push(
-
-                setTimeout(() => {
-
-                    for (let i = 0; i < 5; i++) {
-
-                        document.getElementById(
-                            'c' + i
-                        ).className =
-                            "hardware-core bloqueado";
+                    document
+                        .getElementById('ramB')
+                        .className =
+                        "ram-channel ram-ocupada";
 
 
-                        document.getElementById(
-                            'state-c' + i
-                        ).innerText =
-                            "DEADLOCK";
+                    document
+                        .getElementById('ramB')
+                        .firstElementChild
+                        .innerText =
+                        "LOCKED BY CORE 02";
 
 
-                        document.getElementById(
-                            'state-c' + i
-                        ).style.color =
-                            "var(--error-red)";
+                    document
+                        .getElementById('line2B')
+                        .style.stroke =
+                        "var(--error-red)";
 
 
-                        document.getElementById(
-                            `temp-c${i}`
-                        ).innerText =
-                            "99.5 °C";
-
-
-                        document.getElementById(
-                            `temp-c${i}`
-                        ).style.color =
-                            "var(--error-red)";
-
-
-                        let miRamDer =
-                            ramNombres[
-                                (i + 1) % 5
-                            ];
-
-
-                        const line =
-                            document.getElementById(
-                                `line${i}-${miRamDer}`
-                            );
-
-
-                        if (line) {
-
-                            line.style.stroke =
-                                "var(--warning-amber)";
-
-                        }
-
-                    }
-
-
-                    document.getElementById(
-                        'viewport'
-                    ).style.animation =
-                        "glitchPantalla 0.2s infinite";
-
-
-                    log(
-                        "💥 BUS LOCKUP: Espera circular cíclica " +
-                        "detectada en los 5 nodos de hardware.",
+                    activarPulso(
+                        "pulse2B",
                         "var(--error-red)"
                     );
 
 
                     explicarAnalogia(
-                        "<strong>Mesa: ¡INTERBLOQUEO TOTAL!</strong> " +
-                        "El Core 0 espera al 1, el 1 al 2, el 2 al 3, " +
-                        "el 3 al 4, y el 4 al 0. Ningún filósofo " +
-                        "soltará su tenedor y el procesador completo " +
-                        "se ha colgado.",
+                        "<b>Mesa:</b> El Filósofo 1 tomó el tenedor A. El Filósofo 2 tomó el tenedor B. Cada uno retiene un recurso.",
+                        "var(--warning-amber)"
+                    );
+
+                }, 2600)
+            );
+
+
+            /* PASO 3: DEADLOCK */
+
+            timeouts.push(
+                setTimeout(() => {
+
+                    document
+                        .getElementById('c1')
+                        .className =
+                        "hardware-core bloqueado";
+
+                    document
+                        .getElementById('c2')
+                        .className =
+                        "hardware-core bloqueado";
+
+
+                    document
+                        .getElementById('state-c1')
+                        .innerText =
+                        "HANG (WAIT CHANNEL B)";
+
+                    document
+                        .getElementById('state-c2')
+                        .innerText =
+                        "HANG (WAIT CHANNEL A)";
+
+
+                    document
+                        .getElementById('state-c1')
+                        .style.color =
+                        "var(--error-red)";
+
+                    document
+                        .getElementById('state-c2')
+                        .style.color =
+                        "var(--error-red)";
+
+
+                    actualizarTemperatura(
+                        1,
+                        98.4,
+                        "var(--error-red)"
+                    );
+
+                    actualizarTemperatura(
+                        2,
+                        99.2,
+                        "var(--error-red)"
+                    );
+
+
+                    document
+                        .getElementById('line1B')
+                        .style.stroke =
+                        "var(--warning-amber)";
+
+                    document
+                        .getElementById('line2A')
+                        .style.stroke =
+                        "var(--warning-amber)";
+
+
+                    document
+                        .getElementById('viewport')
+                        .style.animation =
+                        "glitchPantalla 0.2s infinite";
+
+
+                    log(
+                        "💥 BUS LOCKUP: Se ha cerrado un lazo cíclico infinito de interbloqueo. Sobrecalentamiento crítico de núcleos.",
+                        "var(--error-red)"
+                    );
+
+
+                    explicarAnalogia(
+                        "<b>Mesa: DEADLOCK DETECTADO.</b> El Filósofo 1 no soltará A hasta obtener B y el Filósofo 2 no soltará B hasta obtener A. Ninguno puede avanzar.",
                         "var(--error-red)"
                     );
 
 
                     cambiarMetricas(
                         0.00,
-                        0.78,
+                        0.80,
                         0,
                         "var(--error-red)"
                     );
 
-                }, 4500)
-
+                }, 4800)
             );
-
         }
 
 
-        // =========================================
-        // MUTEX
-        // =========================================
+        /* =====================================================
+           MODO AUTOMÁTICO 2: MUTEX
+        ===================================================== */
 
         function iniciarModoMutex() {
 
@@ -1872,595 +2020,387 @@
 
 
             log(
-                "Activando arbitraje asimétrico en la arquitectura...",
+                "Secuencia Automática: Activando Árbitro Mutex Asimétrico...",
                 "var(--success-green)"
             );
 
 
             explicarAnalogia(
-                "<strong>Mesa: Solución Asimétrica.</strong> " +
-                "El último filósofo (Core 4) cambia sus reglas: " +
-                "en lugar de tomar primero el izquierdo, se le obliga " +
-                "a tomar primero su derecho, rompiendo la cadena cíclica.",
+                "<b>Mesa:</b> El camarero aplica una regla de exclusión mutua para impedir que los filósofos formen una espera circular.",
                 "var(--success-green)"
             );
 
 
-            // -----------------------------------------
-            // PASO 1
-            // -----------------------------------------
+            /* PASO 1 */
 
             timeouts.push(
-
                 setTimeout(() => {
 
-                    for (let i = 0; i < 5; i++) {
+                    document
+                        .getElementById('c1')
+                        .className =
+                        "hardware-core hambre";
 
-                        document.getElementById(
-                            'c' + i
-                        ).className =
-                            "hardware-core hambre";
+                    document
+                        .getElementById('c2')
+                        .className =
+                        "hardware-core hambre";
 
 
-                        document.getElementById(
-                            'state-c' + i
-                        ).innerText =
-                            "REQ BUS";
+                    document
+                        .getElementById('state-c1')
+                        .innerText =
+                        "SOLICITANDO RAM";
 
-                    }
+                    document
+                        .getElementById('state-c2')
+                        .innerText =
+                        "SOLICITANDO RAM";
+
+
+                    actualizarTemperatura(
+                        1,
+                        52.0,
+                        "var(--warning-amber)"
+                    );
+
+                    actualizarTemperatura(
+                        2,
+                        52.0,
+                        "var(--warning-amber)"
+                    );
 
 
                     cambiarMetricas(
                         4.10,
                         1.25,
-                        35,
-                        "var(--success-green)"
+                        30
                     );
 
-                }, 1000)
-
+                }, 1200)
             );
 
 
-            // -----------------------------------------
-            // PASO 2
-            // -----------------------------------------
+            /* PASO 2: CORE 1 GANA A */
 
             timeouts.push(
-
                 setTimeout(() => {
 
-                    // CORE 0
+                    estadoBuses.A = 1;
 
-                    log(
-                        "[MUTEX] Core 00 adquiere exitosamente " +
-                        "sección crítica de RAM A y B.",
+
+                    document
+                        .getElementById('ramA')
+                        .className =
+                        "ram-channel ram-ocupada";
+
+
+                    document
+                        .getElementById('ramA')
+                        .firstElementChild
+                        .innerText =
+                        "LOCKED BY CORE 01";
+
+
+                    document
+                        .getElementById('line1A')
+                        .style.stroke =
+                        "var(--success-green)";
+
+
+                    activarPulso(
+                        "pulse1A",
                         "var(--success-green)"
                     );
 
 
-                    document.getElementById(
-                        'c0'
-                    ).className =
-                        "hardware-core comiendo";
-
-
-                    document.getElementById(
-                        'state-c0'
-                    ).innerText =
-                        "PROCESANDO";
-
-
-                    document.getElementById(
-                        'state-c0'
-                    ).style.color =
-                        "var(--success-green)";
-
-
-                    document.getElementById(
-                        'temp-c0'
-                    ).innerText =
-                        "72.4 °C";
-
-
-                    document.getElementById(
-                        'temp-c0'
-                    ).style.color =
-                        "var(--success-green)";
-
-
-                    // RAM A y B
-
-                    ['A', 'B'].forEach(
-                        letra => {
-
-                            estadoRams[
-                                letra
-                            ] = 0;
-
-
-                            const r =
-                                document.getElementById(
-                                    'ram' + letra
-                                );
-
-
-                            r.className =
-                                "ram-channel ram-ocupada";
-
-
-                            r.innerHTML =
-                                `<span style="font-size:0.45rem;">
-                                    C0
-                                 </span>`;
-
-
-                            const line =
-                                document.getElementById(
-                                    `line0-${letra}`
-                                );
-
-
-                            if (line) {
-
-                                line.style.stroke =
-                                    "var(--success-green)";
-
-                            }
-
-
-                            const pulse =
-                                document.getElementById(
-                                    `pulse0-${letra}`
-                                );
-
-
-                            if (pulse) {
-
-                                pulse.style.display =
-                                    "block";
-
-                                pulse.style.stroke =
-                                    "var(--success-green)";
-
-                                pulse.style.animation =
-                                    "flowData 1.2s linear infinite";
-
-                            }
-
-                        }
+                    log(
+                        "[MUTEX] Core 01 ganó el seguro del Canal A.",
+                        "var(--success-green)"
                     );
 
 
-                    // CORE 1
-
-                    document.getElementById(
-                        'c1'
-                    ).className =
+                    document
+                        .getElementById('c2')
+                        .className =
                         "hardware-core pensando";
 
 
-                    document.getElementById(
-                        'state-c1'
-                    ).innerText =
-                        "BUS BUSY";
+                    document
+                        .getElementById('state-c2')
+                        .innerText =
+                        "SLEEP INTERRUPT";
 
 
-                    // CORE 4
+                    actualizarTemperatura(
+                        1,
+                        56.4,
+                        "var(--warning-amber)"
+                    );
 
-                    document.getElementById(
-                        'c4'
-                    ).className =
-                        "hardware-core pensando";
-
-
-                    document.getElementById(
-                        'state-c4'
-                    ).innerText =
-                        "BUS BUSY";
-
-
-                    log(
-                        "[INFO] Core 01 y Core 04 bloqueados " +
-                        "en espera controlada. Evitando colisiones."
+                    actualizarTemperatura(
+                        2,
+                        34.2,
+                        "var(--cyan-glow)"
                     );
 
 
                     explicarAnalogia(
-                        "<strong>Mesa:</strong> Al romper la simetría, " +
-                        "el Filósofo 0 se apodera de ambos tenedores " +
-                        "y come. El Filósofo 1 y 4 ven el bloqueo y " +
-                        "esperan pacientemente sin atrapar recursos.",
+                        "<b>Mesa:</b> El Filósofo 1 toma el Tenedor A. El Filósofo 2 detecta que está ocupado y entra en espera sin tomar otro recurso.",
                         "var(--success-green)"
                     );
 
 
                     cambiarMetricas(
-                        4.50,
-                        1.32,
-                        60,
-                        "var(--success-green)"
+                        4.40,
+                        1.30,
+                        48
                     );
 
-                }, 2500)
-
+                }, 2800)
             );
 
 
-            // -----------------------------------------
-            // PASO 3
-            // -----------------------------------------
+            /* PASO 3: CORE 1 TOMA B */
 
             timeouts.push(
-
                 setTimeout(() => {
 
-                    // LIBERAR CORE 0
+                    estadoBuses.B = 1;
 
-                    document.getElementById(
-                        'c0'
-                    ).className =
+
+                    document
+                        .getElementById('ramB')
+                        .className =
+                        "ram-channel ram-ocupada";
+
+
+                    document
+                        .getElementById('ramB')
+                        .firstElementChild
+                        .innerText =
+                        "LOCKED BY CORE 01";
+
+
+                    document
+                        .getElementById('line1B')
+                        .style.stroke =
+                        "var(--success-green)";
+
+
+                    activarPulso(
+                        "pulse1B",
+                        "var(--success-green)"
+                    );
+
+
+                    document
+                        .getElementById('c1')
+                        .className =
+                        "hardware-core comiendo";
+
+
+                    document
+                        .getElementById('state-c1')
+                        .innerText =
+                        "PIPELINE ACTIVE";
+
+
+                    document
+                        .getElementById('state-c1')
+                        .style.color =
+                        "var(--success-green)";
+
+
+                    actualizarTemperatura(
+                        1,
+                        76.5,
+                        "var(--success-green)"
+                    );
+
+
+                    log(
+                        "[EXEC] Core 01 obtuvo la sección crítica completa e inicia la transferencia de datos.",
+                        "var(--cyan-glow)"
+                    );
+
+
+                    explicarAnalogia(
+                        "<b>Mesa:</b> El Filósofo 1 toma el Tenedor B libre. Ya tiene ambos recursos y puede comer sin bloquear al sistema.",
+                        "var(--success-green)"
+                    );
+
+
+                    cambiarMetricas(
+                        5.00,
+                        1.38,
+                        92
+                    );
+
+                }, 4500)
+            );
+
+
+            /* PASO 4: CORE 1 LIBERA Y CORE 2 EJECUTA */
+
+            timeouts.push(
+                setTimeout(() => {
+
+                    desactivarPulso("pulse1A");
+                    desactivarPulso("pulse1B");
+
+
+                    document
+                        .getElementById('line1A')
+                        .style.stroke =
+                        "var(--bus-color)";
+
+                    document
+                        .getElementById('line1B')
+                        .style.stroke =
+                        "var(--bus-color)";
+
+
+                    document
+                        .getElementById('c1')
+                        .className =
                         "hardware-core pensando";
 
 
-                    document.getElementById(
-                        'state-c0'
-                    ).innerText =
+                    document
+                        .getElementById('state-c1')
+                        .innerText =
                         "PENSANDO";
 
 
-                    document.getElementById(
-                        'state-c0'
-                    ).style.color =
+                    document
+                        .getElementById('state-c1')
+                        .style.color =
                         "#404c5e";
 
 
-                    document.getElementById(
-                        'temp-c0'
-                    ).innerText =
-                        "35.0 °C";
-
-
-                    document.getElementById(
-                        'temp-c0'
-                    ).style.color =
-                        "var(--cyan-glow)";
-
-
-                    document.getElementById(
-                        'line0-A'
-                    ).style.stroke =
-                        "var(--bus-color)";
-
-
-                    document.getElementById(
-                        'line0-B'
-                    ).style.stroke =
-                        "var(--bus-color)";
-
-
-                    document.getElementById(
-                        'pulse0-A'
-                    ).style.display =
-                        "none";
-
-
-                    document.getElementById(
-                        'pulse0-B'
-                    ).style.display =
-                        "none";
-
-
-                    document.getElementById(
-                        'ramA'
-                    ).className =
-                        "ram-channel";
-
-
-                    document.getElementById(
-                        'ramA'
-                    ).innerHTML =
-                        "<span>A</span>";
-
-
-                    document.getElementById(
-                        'ramB'
-                    ).className =
-                        "ram-channel";
-
-
-                    document.getElementById(
-                        'ramB'
-                    ).innerHTML =
-                        "<span>B</span>";
+                    actualizarTemperatura(
+                        1,
+                        42.0,
+                        "var(--cyan-glow)"
+                    );
 
 
                     log(
-                        "[RELEASE] Core 00 finaliza ciclo. " +
-                        "Liberando canales A y B.",
+                        "[RELEASE] Core 01 terminó cómputo. Buses liberados.",
                         "var(--success-green)"
                     );
 
 
-                    // -----------------------------------------
-                    // CORE 1
-                    // -----------------------------------------
+                    estadoBuses.A = 2;
+                    estadoBuses.B = 2;
 
-                    log(
-                        "[MUTEX] Core 01 y Core 02 inician " +
-                        "procesamiento en paralelo.",
+
+                    document
+                        .getElementById('ramA')
+                        .firstElementChild
+                        .innerText =
+                        "LOCKED BY CORE 02";
+
+                    document
+                        .getElementById('ramB')
+                        .firstElementChild
+                        .innerText =
+                        "LOCKED BY CORE 02";
+
+
+                    document
+                        .getElementById('line2A')
+                        .style.stroke =
+                        "var(--success-green)";
+
+                    document
+                        .getElementById('line2B')
+                        .style.stroke =
+                        "var(--success-green)";
+
+
+                    activarPulso(
+                        "pulse2A",
+                        "var(--success-green)"
+                    );
+
+                    activarPulso(
+                        "pulse2B",
                         "var(--success-green)"
                     );
 
 
-                    document.getElementById(
-                        'c1'
-                    ).className =
+                    document
+                        .getElementById('c2')
+                        .className =
                         "hardware-core comiendo";
 
 
-                    document.getElementById(
-                        'state-c1'
-                    ).innerText =
-                        "PROCESANDO";
+                    document
+                        .getElementById('state-c2')
+                        .innerText =
+                        "PIPELINE ACTIVE";
 
 
-                    document.getElementById(
-                        'state-c1'
-                    ).style.color =
+                    document
+                        .getElementById('state-c2')
+                        .style.color =
                         "var(--success-green)";
 
 
-                    document.getElementById(
-                        'temp-c1'
-                    ).innerText =
-                        "71.0 °C";
+                    actualizarTemperatura(
+                        2,
+                        75.8,
+                        "var(--success-green)"
+                    );
 
 
-                    document.getElementById(
-                        'temp-c1'
-                    ).style.color =
-                        "var(--success-green)";
-
-
-                    // -----------------------------------------
-                    // CORE 2
-                    // -----------------------------------------
-
-                    document.getElementById(
-                        'c2'
-                    ).className =
-                        "hardware-core comiendo";
-
-
-                    document.getElementById(
-                        'state-c2'
-                    ).innerText =
-                        "PROCESANDO";
-
-
-                    document.getElementById(
-                        'state-c2'
-                    ).style.color =
-                        "var(--success-green)";
-
-
-                    document.getElementById(
-                        'temp-c2'
-                    ).innerText =
-                        "73.5 °C";
-
-
-                    document.getElementById(
-                        'temp-c2'
-                    ).style.color =
-                        "var(--success-green)";
-
-
-                    // -----------------------------------------
-                    // RAM B
-                    // -----------------------------------------
-
-                    document.getElementById(
-                        'ramB'
-                    ).className =
-                        "ram-channel ram-ocupada";
-
-
-                    document.getElementById(
-                        'ramB'
-                    ).innerHTML =
-                        `<span style="font-size:0.45rem;">
-                            C1
-                         </span>`;
-
-
-                    // -----------------------------------------
-                    // RAM C
-                    // -----------------------------------------
-
-                    document.getElementById(
-                        'ramC'
-                    ).className =
-                        "ram-channel ram-ocupada";
-
-
-                    document.getElementById(
-                        'ramC'
-                    ).innerHTML =
-                        `<span style="font-size:0.45rem;">
-                            C2
-                         </span>`;
-
-
-                    // -----------------------------------------
-                    // RAM D
-                    // -----------------------------------------
-
-                    document.getElementById(
-                        'ramD'
-                    ).className =
-                        "ram-channel ram-ocupada";
-
-
-                    document.getElementById(
-                        'ramD'
-                    ).innerHTML =
-                        `<span style="font-size:0.45rem;">
-                            C2
-                         </span>`;
-
-
-                    // -----------------------------------------
-                    // BUSES CORE 1
-                    // -----------------------------------------
-
-                    document.getElementById(
-                        'line1-B'
-                    ).style.stroke =
-                        "var(--success-green)";
-
-
-                    document.getElementById(
-                        'line1-C'
-                    ).style.stroke =
-                        "var(--success-green)";
-
-
-                    document.getElementById(
-                        'pulse1-B'
-                    ).style.display =
-                        "block";
-
-
-                    document.getElementById(
-                        'pulse1-C'
-                    ).style.display =
-                        "block";
-
-
-                    document.getElementById(
-                        'pulse1-B'
-                    ).style.stroke =
-                        "var(--success-green)";
-
-
-                    document.getElementById(
-                        'pulse1-C'
-                    ).style.stroke =
-                        "var(--success-green)";
-
-
-                    document.getElementById(
-                        'pulse1-B'
-                    ).style.animation =
-                        "flowData 1.2s linear infinite";
-
-
-                    document.getElementById(
-                        'pulse1-C'
-                    ).style.animation =
-                        "flowData 1.2s linear infinite";
-
-
-                    // -----------------------------------------
-                    // BUSES CORE 2
-                    // -----------------------------------------
-
-                    document.getElementById(
-                        'line2-C'
-                    ).style.stroke =
-                        "var(--success-green)";
-
-
-                    document.getElementById(
-                        'line2-D'
-                    ).style.stroke =
-                        "var(--success-green)";
-
-
-                    document.getElementById(
-                        'pulse2-C'
-                    ).style.display =
-                        "block";
-
-
-                    document.getElementById(
-                        'pulse2-D'
-                    ).style.display =
-                        "block";
-
-
-                    document.getElementById(
-                        'pulse2-C'
-                    ).style.stroke =
-                        "var(--success-green)";
-
-
-                    document.getElementById(
-                        'pulse2-D'
-                    ).style.stroke =
-                        "var(--success-green)";
-
-
-                    document.getElementById(
-                        'pulse2-C'
-                    ).style.animation =
-                        "flowData 1.2s linear infinite";
-
-
-                    document.getElementById(
-                        'pulse2-D'
-                    ).style.animation =
-                        "flowData 1.2s linear infinite";
+                    log(
+                        "[EXEC] Core 02 despierta por interrupción, reclama canales y procesa con exclusión mutua segura.",
+                        "var(--cyan-glow)"
+                    );
 
 
                     explicarAnalogia(
-                        "<strong>Mesa:</strong> El filósofo 0 termina " +
-                        "y suelta los tenedores. Esto permite que el " +
-                        "filósofo 1 y el filósofo 2 coman al mismo " +
-                        "tiempo de forma coordinada.",
+                        "<b>Mesa:</b> El Filósofo 1 termina y suelta ambos tenedores. El Filósofo 2 despierta, toma los recursos disponibles y comienza a comer. No existe espera circular.",
                         "var(--success-green)"
                     );
 
 
                     cambiarMetricas(
-                        4.90,
-                        1.36,
-                        85,
-                        "var(--success-green)"
+                        4.80,
+                        1.34,
+                        88
                     );
 
-                }, 5500)
-
+                }, 7200)
             );
 
 
-            // -----------------------------------------
-            // FIN DEL CICLO
-            // -----------------------------------------
+            /* FINAL */
 
             timeouts.push(
-
                 setTimeout(() => {
 
                     reiniciarSistema();
 
 
                     log(
-                        "✨ Ciclo completo de 5 hilos finalizado " +
-                        "a máxima eficiencia sin ningún tipo de colisión.",
+                        "✨ Simulación concluida con éxito. Eficiencia del sistema: Óptima.",
                         "var(--success-green)"
                     );
 
-                }, 8500)
-
+                }, 10500)
             );
-
         }
+
+
+        /* ================= INICIO ================= */
+
+        reiniciarSistema();
 
     </script>
 
 </body>
 </html>
-```
